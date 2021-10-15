@@ -1,0 +1,239 @@
+<template>
+  <view class="scan-page">
+    <div class="back" :style="{ top: top + 'px', height: height + 'px' }">
+      <image
+        class="back-icon"
+        mode="widthFix"
+        src="/static/back2.svg"
+        @click="back"
+      ></image>
+    </div>
+    <div class="scan" v-if="!src">
+      <camera
+        device-position="back"
+        flash="auto"
+        @error="error"
+        class="camera"
+      ></camera>
+      <div class="bottom">
+        <div class="local" @click="chooseOne">
+          <image class="pic" mode="widthFix" src="/static/camera2.svg"></image>
+          <span class="name">相册</span>
+        </div>
+        <image
+          class="pic-btn"
+          mode="widthFix"
+          src="/static/shot.svg"
+          @click="takeOne"
+        ></image>
+
+        <div
+          class="has-done"
+          @click="clickHasDone"
+          :style="{ opacity: lastUrl ? 1 : 0 }"
+        >
+          <div class="pic-wrap">
+            <image mode="widthFix" class="pic" :src="lastUrl"></image>
+          </div>
+          <div class="text">完成</div>
+          <div class="num">{{ hasDoneArr.length }}</div>
+        </div>
+      </div>
+    </div>
+  </view>
+</template>
+
+<script>
+import { mapState, mapGetters } from "vuex";
+export default {
+  data() {
+    return {
+      src: "",
+      top: "",
+      height: "",
+      data: {},
+    };
+  },
+  computed: {
+    ...mapGetters(["lastUrl"]),
+    ...mapState(["hasDoneArr"]),
+  },
+  onLoad() {
+    let { height, top } = uni.getMenuButtonBoundingClientRect();
+    this.height = height;
+    this.top = top;
+  },
+  methods: {
+    clickHasDone() {
+      if (this.hasDoneArr.length) {
+        this.back();
+      }
+    },
+    back() {
+      uni.navigateBack();
+    },
+    async takeOne() {
+      let url = await this.takePhoto();
+      this.hasDoneArr.push(url);
+    },
+    async chooseOne() {
+      let url = await this.chooseImage();
+      this.hasDoneArr.push(url);
+    },
+
+    takePhoto() {
+      return new Promise((resolve, reject) => {
+        const ctx = uni.createCameraContext();
+        ctx.takePhoto({
+          quality: "high",
+          success: (res) => {
+            resolve(res.tempImagePath);
+          },
+          fail: (e) => {
+            uni.showToast({
+              icon: "none",
+              title: "相机调用失败",
+              duration: 2000,
+            });
+            reject(e);
+          },
+        });
+      });
+    },
+
+    chooseImage() {
+      return new Promise((resolve, reject) => {
+        uni.chooseImage({
+          count: 1,
+          sizeType: ["original", "compressed"],
+          sourceType: ["album"], //这要注意，camera掉拍照，album是打开手机相册
+          success: (res) => {
+            resolve(res.tempFilePaths[0]);
+          },
+          fail: (e) => {
+            reject(e);
+          },
+        });
+      });
+    },
+    error(e) {
+      uni.showToast({
+        icon: "none",
+        title: "请打开摄像头权限，再重新进入本页面",
+        duration: 4000,
+      });
+      console.log(e.detail);
+    },
+  },
+};
+</script>
+
+<style scoped lang="scss">
+.scan-page {
+  position: relative;
+  .back {
+    position: absolute;
+    background: transparent;
+    width: 150rpx;
+    z-index: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .back-icon {
+      z-index: 5;
+      width: 25px;
+    }
+  }
+
+  height: 100%;
+  .scan {
+    height: 100%;
+    .camera {
+      height: 100%;
+      width: 100%;
+    }
+
+    .bottom {
+      color: white;
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+
+     @include fixed-bottom(54rpx) ;
+      .desc {
+        font-weight: bold;
+        font-size: 32rpx;
+        margin-bottom: 34rpx;
+      }
+      .pic-btn {
+        width: 144rpx;
+      }
+      .local {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 118rpx;
+        height: 118rpx;
+
+        background-color: rgba(161, 161, 161, 0.95);
+        .pic {
+          width: 45rpx;
+        }
+        .name {
+          margin-top: 2px;
+          font-size: 24rpx;
+        }
+      }
+
+      .has-done {
+        width: 108rpx;
+        height: 108rpx;
+        border: 2rpx solid #ff782e;
+        position: relative;
+        border-radius: 6rpx;
+        .pic-wrap {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          .pic {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .text {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 54rpx;
+          color: white;
+          background: #ff782e;
+          font-size: 24rpx;
+          line-height: 54rpx;
+          text-align: center;
+        }
+        .num {
+          background: #ff782e;
+          border-radius: 50%;
+          color: white;
+          width: 40rpx;
+          height: 40rpx;
+          line-height: 40rpx;
+          font-size: 24rpx;
+          text-align: center;
+          position: absolute;
+          top: 0;
+          right: 0;
+          transform: translate(50%, -50%);
+        }
+      }
+    }
+  }
+}
+</style>
