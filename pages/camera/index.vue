@@ -29,8 +29,8 @@
 
         <div
           class="has-done"
-          @click="clickHasDone"
-          :style="{ opacity: lastUrl ? 1 : 0 }"
+          @click="back"
+          :style="{ visibility: lastUrl ? 'visible' : 'hidden' }"
         >
           <div class="pic-wrap">
             <image mode="widthFix" class="pic" :src="lastUrl"></image>
@@ -64,11 +64,6 @@ export default {
     this.top = top;
   },
   methods: {
-    clickHasDone() {
-      if (this.hasDoneArr.length) {
-        this.back();
-      }
-    },
     back() {
       uni.navigateBack();
     },
@@ -178,8 +173,8 @@ export default {
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        width: 118rpx;
-        height: 118rpx;
+        width: 108rpx;
+        height: 108rpx;
 
         background-color: rgba(161, 161, 161, 0.95);
         .pic {
