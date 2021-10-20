@@ -1,5 +1,5 @@
 {
-    "name" : "eyes",
+    "name" : "weikai",
     "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid":"wx4a3ddb5693f83cd9",
+        "appid":"wx1132e95a45fe922f",
         "setting" : {
             "urlCheck" : false
         },

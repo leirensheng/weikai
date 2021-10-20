@@ -12,43 +12,36 @@
       <div class="textarea no-text" v-else>请复制唯品会手机端的商品链接</div>
     </div>
     <div class="demo" @click="openDialog">
-      <div class="left" :class="{black:selectedName}">{{selectedName||'选择演示样例'}}</div>
-      <image mode="widthFix" class="icon" src="/static/"></image>
+      <div class="left" :class="{ black: selectedName }">
+        {{ selectedName || "选择演示样例" }}
+      </div>
+      <image mode="widthFix" class="icon" src="/static/right.svg"></image>
     </div>
     <my-dialog v-model="isShowDialog">
-      <div class="dialog-content safe-bottom ">
-        <div
-          class="item"
-          v-for="(item, index) in items"
-          :key="index"
-          @click="setValue(item)"
-        >
-          {{ item.name }}
+      <scroll-view class="scroll-Y" scroll-y="true">
+        <div class="dialog-content safe-bottom">
+          <div
+            class="item"
+            v-for="(item, index) in items"
+            :key="index"
+            @click="setValue(item)"
+          >
+            {{ item.productName }}
+          </div>
         </div>
-      </div>
+      </scroll-view>
     </my-dialog>
   </div>
 </template>
 
 <script>
+import { getSample } from "@/api/eye.js";
+
 export default {
   data() {
     return {
-      selectedName:'',
-      items: [
-        {
-          name: "微电脑电饭煲",
-          url: "http://a.url",
-        },
-        {
-          name: "自动电饭煲",
-          url: "http://b.url",
-        },
-        {
-          name: "全智能电饭煲",
-          url: "http://a.url",
-        },
-      ],
+      selectedName: "",
+      items: [],
       isShowDialog: false,
     };
   },
@@ -58,17 +51,28 @@ export default {
       default: "",
     },
   },
-  created() {},
+  async created() {
+    uni.showLoading({
+      title: "加载中",
+    });
+    let data = await getSample();
+    this.items = data.map((one) => ({ ...one, productLink: "https://detail.vip.com/detail-1710616951-6919462142443405399.html" }));
+    uni.hideLoading();
+  },
   mounted() {},
   methods: {
-    setValue({ url,name }) {
-      this.selectedName = name
-      this.$emit("input", url);
-      this.isShowDialog = false
+    setValue({ productLink, productName,id }) {
+      this.selectedName = productName;
+      this.$emit("input", productLink);
+      this.$emit("update:basedataId", id);
+
+      this.isShowDialog = false;
     },
     clear() {
-      this.selectedName =''
+      this.selectedName = "";
       this.$emit("input", "");
+      this.$emit("update:basedataId", '');
+
     },
     openDialog() {
       this.isShowDialog = true;
@@ -80,6 +84,9 @@ export default {
 <style scoped lang="scss">
 .step-1 {
   width: 100%;
+  .scroll-y {
+    max-height: 50vh;
+  }
   .card {
     .top {
       display: flex;
@@ -127,7 +134,7 @@ export default {
     padding: 48rpx 0 28rpx 0;
     color: #999;
     border-bottom: 1rpx solid currentColor;
-    .black{
+    .black {
       color: black;
     }
     .icon {
@@ -136,6 +143,8 @@ export default {
     }
   }
   .dialog-content {
+    max-height: 50vh;
+    overflow: auto;
     background: white;
     .item {
       line-height: 49rpx;

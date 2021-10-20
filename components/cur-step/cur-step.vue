@@ -38,7 +38,6 @@ export default {
       let res = `/static/${index + 1}-${
         isActive ? "active" : bigger ? "black" : "grey"
       }.svg`;
-      console.log(res);
       return res;
     },
   },

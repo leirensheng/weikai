@@ -1,144 +1,134 @@
 <template>
   <div class="report" :class="isOwner ? 'has-fixed' : 'no-fixed'">
-    <div class="fixed-tab" :class="isFixedTop ? 'show' : null">
-      <my-tab :tabs="tabs" v-model="tab"></my-tab>
+    <div class="content">
+      <div class="title">{{ data.reportTitle || data.productName }}</div>
+      <div class="date">{{ showDate }}</div>
+      <div class="isConsistent" :style="{ borderColor, background }">
+        <image mode="widthFix" class="icon" :src="src"></image>
+        <div class="name">{{ isConsistentName }}</div>
+      </div>
+
+      <table>
+        <thead class="thead">
+          <th class="th">
+            <div class="title-bg">网页展示信息</div>
+          </th>
+          <th class="th">
+            <div class="title-bg">实物铭牌信息</div>
+          </th>
+        </thead>
+        <tr class="tr" v-for="(item, index) in config" :key="index">
+          <td class="td0">{{ item.name }}</td>
+          <td class="td">{{ basedata[item.id] }}</td>
+          <td
+            class="td"
+            v-html="
+              getShowHtml(
+                data[item.id],
+                basedata[item.id],
+                item.isMultiple,
+                item.id
+              )
+            "
+          ></td>
+        </tr>
+      </table>
     </div>
     <div class="bottom" v-if="isOwner">
       <div class="left" @click="remove">
         <image class="icon" mode="widthFix" src="/static/delete.svg"></image>
         <div>删除报告</div>
       </div>
-      <button class="btn1" @click="toggleCollect">
+      <button class="btn" @click="toggleCollect">
         <image class="icon" mode="widthFix" :src="collectSrc"></image>
         <div>{{ collectName }}</div>
       </button>
-      <button class="btn1" open-type="share">
+      <button class="btn" open-type="share">
         <image class="icon" mode="widthFix" src="/static/share.svg"></image>
         <div>转发</div>
       </button>
     </div>
-    <scroll-view
-      class="scroll-Y"
-      :scroll-top="scrollTop"
-      scroll-y="true"
-      @scroll="scroll"
-    >
-      <div class="main">
-        <div class="left">
-          <div>合规性</div>
-          <div>报告</div>
-        </div>
-        <div class="right">
-          <div class="title">{{ data.productName }}</div>
-          <div class="subtitle">
-            <div class="date">{{ $formatTime(data.createDate, true) }}</div>
-            <div v-if="platformName">商品来源：{{ platformName }}</div>
-          </div>
-        </div>
-      </div>
-
-      <my-tab :tabs="tabs" v-model="tab" class="my-tab"></my-tab>
-
-      <div class="content">
-        <legal v-if="tab === 0" :data="legalData"></legal>
-        <quality v-if="tab === 1" :data="qualityData"></quality>
-        <consume v-if="tab === 2"></consume>
-        <certificate v-if="tab === 3" :data="certificateData"></certificate>
-      </div>
-    </scroll-view>
   </div>
 </template>
 
 <script>
 import { deleteReport, collect, noCollect, getDetail } from "@/api/eye.js";
 import { mapMutations } from "vuex";
-import Tabs from "../../components/tabs/tabs.vue";
-import TabPane from "../../components/tabs/tabPane.vue";
 
 let isFromUser = true;
 
 export default {
-  components: {
-    Tabs,
-    TabPane,
-  },
-  onPageScroll(e) {
-    this.scrollTop = e.scrollTop;
-  },
+  components: {},
+
   data() {
     return {
-      scrollTop: 0,
-      oldScrollTop: 0,
-      contentHeightArr: null,
-      fixedTop: 100,
-      scrollTop: 0,
+      config: [
+        {
+          name: "产品名称",
+          id: "productName",
+        },
+        {
+          name: "规格型号",
+          id: "specifications",
+        },
+        {
+          name: "商品条码",
+          id: "productCode",
+        },
+        {
+          name: "生产者名称",
+          id: "manufacturer",
+          isMultiple: true,
+        },
+        {
+          name: "生产者地址",
+          isMultiple: true,
+          id: "manufacturerAddr",
+        },
+        {
+          name: "执行标准",
+          id: "standard",
+          isMultiple: true,
+        },
+      ],
       data: {},
       isCollected: false,
-      tab: 0,
       isOwner: false,
       loading: false,
     };
   },
 
   computed: {
-    tabs() {
-      let arr = [
-        {
-          name: "合规性评价",
-        },
-        {
-          name: "质量性评价",
-        },
-        {
-          name: "消费指南",
-        },
-        {
-          name: "认证证书",
-        },
-      ];
-      return this.hasCertificate ? arr : arr.slice(0, -1);
+    basedata() {
+      return this.data.basedata || {};
     },
-    isFixedTop() {
-      return this.oldScrollTop >= this.fixedTop;
+    isConsistentName() {
+      return this.data.isConsistent === 1
+        ? "该产品网页展示信息与实物铭牌展示信息一致"
+        : "该产品网页展示信息与实物铭牌展示信息存在差异";
     },
-    legalData() {
-      return this.data.compliance || {};
+    showDate() {
+      return this.$formatTime(this.data.createTime, true);
     },
-    hasCertificate() {
-      return !!this.certificateData.certificateNo;
+    isOk() {
+      return this.data.isConsistent === 1;
     },
-    certificateData() {
-      let obj = this.data.certificate || {};
-      if (obj.grade) {
-        obj.grade = obj.grade.replace("级", "");
-      }
-      return obj;
+    src() {
+      let type = this.isOk ? "success" : "danger";
+      return `/static/${type}.svg`;
     },
-    qualityData() {
-      return {
-        product: this.data.producerQuantity || [],
-        category: this.data.categoryQuantity || [],
-        negative: this.data.negative,
-        positive: this.data.positive,
-        commentKeyWord: this.data.commentKeyWord,
-        commentFinished: !!this.data.commentFinished,
-      };
+    borderColor() {
+      return this.isOk ? "#B7EB8F" : "#FF8788";
     },
+    background() {
+      return this.isOk ? "#EAFFD6" : "#FFDFDF";
+    },
+
     collectSrc() {
       return this.isCollected ? "/static/collected.svg" : "/static/collect.svg";
     },
     collectName() {
       return this.isCollected ? "取消收藏" : "收藏";
-    },
-
-    platformName() {
-      let map = {
-        JD: "京东",
-        TM: "天猫",
-        TB: "淘宝",
-        PDD: "拼多多",
-      };
-      return map[this.data.platform];
     },
   },
   async onShareAppMessage() {
@@ -160,22 +150,10 @@ export default {
         uni.hideLoading();
       }
     },
-    tab(val) {
-      if (this.isFixedTop) {
-        this.scrollTop = this.oldScrollTop;
-        this.$nextTick(() => {
-          this.scrollTop = this.fixedTop;
-        });
-      }
-      if (val === 1 && !this.data.commentFinished) {
-        this.refreshComment();
-      }
-    },
   },
   onUnload() {
     uni.$off("loginStatus", this.backFromLogin);
-    this.tab = 0
-    let isChange = this.isCollected !== this.data.collected;
+    let isChange = this.isCollected !== this.data.isCollection;
     if (isChange) {
       this.setNeedRefreshCollect(true);
     }
@@ -200,11 +178,33 @@ export default {
     }
   },
   methods: {
-    scroll(e) {
-      this.oldScrollTop = e.detail.scrollTop;
+    getShowHtml(val, base, isMultiple, id) {
+      let toCompare = isMultiple && Array.isArray(val) ? val[0] : val;
+      let markStr = this.getMark(toCompare, base);
+      let isStandard = id === "standard";
+      if (isStandard && (val||[]).length>1) {
+        markStr += "、";
+      }
+      let otherStr = "";
+      if (isMultiple) {
+        let arr = (val || []).slice(1);
+        let className = isStandard ? "has-top" : "grey has-top";
+
+        arr = arr.map((one, index) => {
+          let content =
+            isStandard && index !== arr.length - 1 ? one + "、" : one;
+          return `<div class="${className}">${content}</div>`;
+        });
+        otherStr = arr.join("");
+      }
+      return markStr + otherStr;
     },
-    async getFixedTop() {
-      this.fixedTop = await this.$getDomInfo(".report .main", false, "height");
+    getMark(val, base) {
+      let arr = String(val).split("");
+      let res = arr.map((one, index) =>
+        !base || base[index] !== one ? `<span class="red">${one}</span>` : one
+      );
+      return res.join("");
     },
     backFromLogin(val) {
       if (val) {
@@ -221,31 +221,15 @@ export default {
       let openId = uni.getStorageSync("openId");
       if (!openId) return;
       this.loading = true;
-      this.data = await getDetail(this.id);
-      this.isCollected = this.data.collected;
-      this.isOwner = this.data.openId === openId;
+      let data = await getDetail(this.id);
+      data.basedata.standard = data.basedata.standard.split('、').join('、\n')
 
-      setTimeout(() => {
-        this.getFixedTop();
-      }, 200);
+      this.data = data;
+      this.isCollected = this.data.isCollection;
+      this.isOwner = this.data.openId === openId;
       this.loading = false;
     },
-    async refreshComment() {
-      await this.$sleep(2000);
-      // 销毁前手动设置为0
-      if (this.tab === 1) {
-        let data = await getDetail(this.id);
-        if (!data.commentFinished) {
-          await this.refreshComment();
-        } else {
-          let { negative, positive, commentKeyWord, commentFinished } = data;
-          this.data.negative = negative;
-          this.data.positive = positive;
-          this.data.commentKeyWord = commentKeyWord;
-          this.data.commentFinished = commentFinished;
-        }
-      }
-    },
+
     remove() {
       uni.showModal({
         title: "确定要删除此报告吗?",
@@ -290,75 +274,82 @@ export default {
 
 <style scoped lang="scss">
 .report {
-  height: 100vh;
+  // height: 100vh;
   &.has-fixed {
     @include fixed-bottom(100rpx);
   }
   &.no-fixed {
     @include fixed-bottom(0rpx);
   }
-  .scroll-Y {
-    height: 100%;
-  }
-  .fixed-tab {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 5;
-    transform: translateY(-100%);
-    opacity: 0;
-    &.show {
-      opacity: 1;
-      transform: translateY(0%);
-    }
-  }
-  .main {
-    padding: 56rpx 26rpx 46rpx 48rpx;
-    display: flex;
-    .left {
-      flex-shrink: 0;
-      width: 164rpx;
-      height: 164rpx;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      line-height: 56rpx;
-      font-size: 40rpx;
-      font-weight: 500;
-      color: white;
-
-      background: linear-gradient(180deg, #0060ff 0%, #004dcd 100%);
-    }
-    .right {
-      margin-left: 34rpx;
-      .title {
-        color: black;
-        font-size: 32rpx;
-        text-align: justify;
-        margin-bottom: 24rpx;
-        line-height: 44rpx;
-        display: -webkit-box;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-      }
-      .subtitle {
-        line-height: 40rpx;
-        font-size: 28rpx;
-        color: #999999;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-  }
   .content {
-    padding: 48rpx 24rpx;
-    min-height: calc(100vh - 98rpx - 100rpx - constant(safe-area-inset-bottom));
-    min-height: calc(100vh - 98rpx - 100rpx - env(safe-area-inset-bottom));
+    padding: 50rpx 24rpx 48rpx 24rpx;
+  }
+  .title {
+    text-align: center;
+    color: black;
+    line-height: 50rpx;
+    font-size: 36rpx;
+    font-weight: 500;
+  }
+  .date {
+    text-align: center;
+    margin-top: 16rpx;
+    font-size: 28rpx;
+    line-height: 40rpx;
+    color: #999999;
+    text-align: center;
+  }
+  .isConsistent {
+    padding: 32rpx;
+    margin-top: 48rpx;
+    border-radius: 4rpx;
+    display: flex;
+    border: 2rpx solid;
+    .icon {
+      margin-top: 5rpx;
+      width: 36rpx;
+      height: 36rpx;
+      flex-shrink: 0;
+      margin-right: 16rpx;
+    }
+    .name {
+      font-weight: 500;
+      font-size: 24rpx;
+      line-height: 48rpx;
+    }
+  }
+
+  $width: 200rpx;
+
+  .thead {
+    display: flex;
+    justify-content: flex-end;
+    padding: 38rpx 0;
+    .th {
+      width: calc((100% - #{$width}) * 0.5);
+      transform: translateX(-10%);
+    }
+  }
+  .tr {
+    border-top: 2rpx solid #e8e8e8;
+    border-bottom: 2rpx solid #e8e8e8;
+    display: flex;
+    padding: 16rpx 0;
+    .td0 {
+      line-height: 60rpx;
+      font-weight: 400;
+      font-size: 24rpx;
+      color: black;
+      width: $width;
+    }
+    .td {
+      width: calc((100% - #{$width}) * 0.5);
+      padding: 0 10rpx;
+      font-size: 24rpx;
+      color: black;
+      font-weight: 500;
+      line-height: 34rpx;
+    }
   }
   .bottom {
     padding: 14rpx 24rpx 0 24rpx;
@@ -381,19 +372,22 @@ export default {
       justify-content: center;
       align-items: center;
       line-height: 34rpx;
-      color: #004dcd;
+      color: #ff782e;
       width: 150rpx;
       .icon {
         width: 36rpx;
       }
     }
 
-    .btn1 {
+    .btn {
       width: 256rpx;
       margin: 0;
+      height: 72rpx;
+
+      font-size: 28rpx;
       .icon {
         margin-right: 12rpx;
-        width: 32rpx;
+        width: 36rpx;
       }
     }
   }
@@ -401,4 +395,13 @@ export default {
 </style>
 
 <style lang="scss">
+.red {
+  color: red;
+}
+.grey {
+  color: #999999;
+}
+.has-top {
+  margin-top: 16rpx;
+}
 </style>

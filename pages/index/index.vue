@@ -39,7 +39,7 @@ export default {
       current: 0,
       items: [
         {
-          pic: "/static/index1.png",
+          pic: "/static/index1.svg",
           desc: '<div class="pic-desc">复制<span class="hightlight">唯品会手机端</span>的商品链接</div>',
         },
         {
@@ -53,7 +53,7 @@ export default {
   mounted() {},
   methods: {
     toSearch() {
-        this.$toPage('search')
+      this.$toPage("search");
     },
     handleChange(e) {
       this.current = e.detail.current;
@@ -80,6 +80,7 @@ export default {
     }
     .swiper {
       height: 620rpx;
+      width: 100%;
       .item {
         .icon {
           display: block;
@@ -103,6 +104,7 @@ export default {
     width: 100%;
     text-align: center;
     color: #999999;
+    z-index: -1;
     .title {
       line-height: 40rpx;
       font-size: 28rpx;

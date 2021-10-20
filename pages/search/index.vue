@@ -1,12 +1,18 @@
 <template>
   <div class="search">
     <cur-step v-model="curStep"></cur-step>
-    <step-one v-model="url" v-show="curStep === 0"></step-one>
+    <step-one
+      :basedataId.sync="basedataId"
+      v-model="url"
+      v-show="curStep === 0"
+    ></step-one>
     <step-two v-model="hasDoneArr" v-show="curStep === 1"></step-two>
-    <step-three v-show="curStep === 2"></step-three>
+    <step-three :result="result" v-show="curStep === 2"></step-three>
 
     <div class="bottom">
-      <div class="btn-primary" @click="prev" v-if="curStep !== 0">上一步</div>
+      <button class="btn-primary" @click="prev" v-if="curStep !== 0">
+        上一步
+      </button>
       <button
         class="btn"
         :disabled="isDisabled"
@@ -25,16 +31,16 @@
 <script>
 import { mapState, mapGetters, mapMutations } from "vuex";
 import subscribeMixin from "./subscribe";
-import { generate } from "@/api/eye.js";
+import { generate, uploadPic, analyse } from "@/api/eye.js";
 
 export default {
   mixins: [subscribeMixin],
   computed: {
     isDisableReport() {
-      return Object.values(this.form).filter(Boolean).length === 0||this.hasGenerate;
+      return Object.values(this.form).filter(Boolean).length === 0;
     },
     ...mapState(["hasDoneArr", "form"]),
-    ...mapGetters(["lastUrl"]),
+    ...mapGetters(["lastUrl", "isChangeArr"]),
     isDisabled() {
       if (this.curStep === 0) {
         return this.url.length === 0;
@@ -43,12 +49,15 @@ export default {
       }
     },
   },
-  created() {
-    console.log("create");
-  },
-  onShow() {
+
+  async onShow() {
     this.checkSubscribe();
     this.setTitle();
+    this.isLogin = await this.$checkLogin();
+
+    if (this.curStep === 0) {
+      await this.$getClip();
+    }
   },
   watch: {
     curStep: {
@@ -61,42 +70,95 @@ export default {
   data() {
     return {
       url: "",
+      basedataId: "",
+      batchId: "",
       loading: false,
       curStep: 0,
-      hasGenerate:false
+      result: {},
+      isLogin: false,
     };
+  },
+  onLoad() {
+    uni.$on("loginStatus", this.setLoginStatus);
+  },
+  onUnload() {
+    this.reset()
+    uni.$off("loginStatus", this.setLoginStatus);
   },
   mounted() {},
   methods: {
-    ...mapMutations(["setNeedRefreshLeft", "setSubscribe"]),
-
-    toReport(isSubscribeOk) {
-      this.hasGenerate = true;
-      this.setSubscribe(isSubscribeOk);
+    ...mapMutations([
+      "setNeedRefreshLeft",
+      "setSubscribe",
+      "setCompareArr",
+      "setHasDoneArr",
+    ]),
+    setLoginStatus(val) {
+      this.isLogin = val;
+    },
+    toReport() {
       uni.switchTab({
         url: "/pages/user/index",
       });
     },
+    getForm() {
+      let val = JSON.parse(JSON.stringify(this.form));
+      val.standards = val.standard.split("、\n");
+      delete val.standard;
+      Object.keys(val).forEach((key) => {
+        let reg = /(manufacturers|manufacturerAddrs)(\d)/;
+        let res = key.match(reg);
+
+        if (res) {
+          let realKey = res[1];
+          let index = res[2] - 1;
+          if (!val[realKey]) val[realKey] = [];
+          val[realKey][index] = val[key];
+          delete val[key];
+        }
+      });
+      console.log(val);
+      return val;
+    },
     async generate() {
-      let weChatNotify = false;
+      if (!this.isLogin) {
+        this.$toLogin();
+        return;
+      }
+      let weChatNotify = 0;
       this.loading = true;
       try {
         await this.subscribe();
-        weChatNotify = true;
+        weChatNotify = 1;
       } catch (e) {
-        weChatNotify = false;
+        weChatNotify = 0;
       }
       uni.showLoading({
         title: "生成中",
       });
+      let val = this.getForm();
       await generate({
-        ...this.form,
-        weChatNotify,
+        ...val,
+        basedataId: this.basedataId,
+        isSub: weChatNotify,
+        imageBatchId: this.batchId,
       });
       this.setNeedRefreshLeft(true);
       uni.hideLoading();
+      this.reset();
       this.loading = false;
-      this.toReport(weChatNotify);
+      this.toReport();
+    },
+    reset() {
+      this.setHasDoneArr([]);
+      this.setCompareArr([]);
+      this.url = "";
+      this.basedataId = ""
+      this.batchId = "";
+      this.loading = false;
+      this.curStep = "";
+      this.result = {};
+      this.isLogin = false;
     },
     setTitle() {
       let map = {
@@ -108,8 +170,31 @@ export default {
         title: map[this.curStep],
       });
     },
-    next() {
+    async next() {
+      if (this.curStep === 1 && this.isChangeArr) {
+        await this.uploadAndAnalyse();
+      }
       this.curStep++;
+    },
+    async uploadAndAnalyse() {
+      let batchId = this.$getId();
+      this.batchId = batchId;
+      uni.showLoading({
+        title: "图片识别中",
+      });
+      await this.upload(batchId);
+      await this.analyse(batchId);
+      uni.hideLoading();
+    },
+    async analyse(batchId) {
+      this.result = await analyse(batchId);
+    },
+
+    async upload(batchId) {
+      let promises = this.hasDoneArr.map((one) => uploadPic(one, batchId));
+      await Promise.all(promises);
+
+      this.setCompareArr([...this.hasDoneArr]);
     },
     prev() {
       this.curStep--;
@@ -121,6 +206,8 @@ export default {
 <style scoped lang="scss">
 .search {
   padding: 48rpx 24rpx;
+  @include fixed-bottom(148rpx);
+
   .bottom {
     position: fixed;
     bottom: 0;
@@ -130,10 +217,13 @@ export default {
     justify-content: center;
     align-items: center;
     @include fixed-bottom(10rpx);
-
-    // @min fixed-bottom
+    padding-top: 10rpx;
+    background: white;
+    z-index: 100;
     .btn,
     .btn-primary {
+      height: 80rpx;
+      font-size: 28rpx;
       margin: 0 22rpx;
       flex: 1;
       // margin-bottom: 48rpx;

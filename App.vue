@@ -83,7 +83,7 @@ div {
   color: #ff6e00;
   height: 80rpx;
   font-size: 32rpx;
-  // width: 702rpx;
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,12 +162,14 @@ div {
     z-index: -1;
     position: absolute;
     bottom: 0;
-    left: -24rpx;
-    right: -24rpx;
+    left: -10rpx;
+    right: -10rpx;
     top: 50%;
     content: "";
     display: block;
-    background: #d9e7ff;
+    background: #FFE5D8;
   }
 }
+
+
 </style>

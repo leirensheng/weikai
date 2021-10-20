@@ -1,6 +1,6 @@
 <template>
   <div class="step-3">
-    <div class="row" v-for="item in data" :key="item.id">
+    <div class="row" v-for="item in config" :key="item.id">
       <label class="label" :class="item.required && 'required'" :for="item.id"
         >{{ item.name }}：</label
       >
@@ -12,12 +12,12 @@
           /> -->
       <div class="textarea-wrap">
         <textarea
+         v-if="isReady"
           :maxlength="-1"
           auto-height
           class="textarea"
           v-model="form[item.id]"
           :name="item.id"
-          :disabled="isSyncing !== 0"
           placeholder="未显示"
         />
       </div>
@@ -47,14 +47,13 @@ import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState(["form"]),
-  },
-  data() {
-    return {
-      imageTextSplits: [
-        ["fds", "d", "gh"],
-        ["ghj", "FDS", "FFF"],
-      ],
-      data: [
+    imageTextSplits() {
+      return this.result.imageTextSplits || [];
+    },
+    config() {
+      let addrs = this.transformConfig("manufacturerAddrs", "企业地址");
+      let factures = this.transformConfig("manufacturers", "企业名称");
+      return [
         {
           name: "产品名称",
           id: "productName",
@@ -62,38 +61,69 @@ export default {
         {
           name: "规格型号",
           id: "specifications",
-          required: true,
         },
         {
           name: "商品条码",
           id: "code",
         },
-        {
-          name: "企业名称1",
-          id: "factory1",
-        },
-        {
-          name: "企业名称2",
-          id: "factory2",
-        },
+        ...factures,
+        ...addrs,
         {
           name: "执行标准",
           id: "standard",
         },
-      ],
+      ];
+    },
+  },
+  watch: {
+    result: {
+      deep: true,
+      handler(val) {
+        this.$nextTick(() => {
+          this.config.forEach((one) => {
+            let reg = /(manufacturers|manufacturerAddrs)(\d)/;
+            let res = one.id.match(reg);
+            let key = one.id;
+            let index = 0;
+            let value = val[one.id];
+            if (res) {
+              key = res[1];
+              index = res[2] - 1;
+              value = val[key][index];
+            } else if (one.id === "standard") {
+              value = val.standards.join("、\n");
+            }
+            this.$set(this.form, one.id, value);
+            this.isReady = true
+          });
+        });
+      },
+    },
+  },
+  props: {
+    result: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  data() {
+    return {
+      isReady:false,
       editingId: "",
       dialogShow: false,
     };
   },
-  created() {
-    //多个地址
 
-    this.data.forEach((one) => {
-      this.$set(this.form, one.id, "");
-    });
-  },
   mounted() {},
   methods: {
+    transformConfig(key, name) {
+      let length = this.result[key] ? this.result[key].length || 1 : 1;
+      let onlyOne = length === 1;
+      return Array.from({ length }, (one, index) => ({
+        name: onlyOne ? name : `${name + (index + 1)}`,
+        id: `${key + (index + 1)}`,
+      }));
+    },
     setValue(val) {
       this.form[this.editingId] = val;
     },
@@ -133,8 +163,8 @@ export default {
       flex: 1;
       margin-right: 60rpx;
       line-height: 1.4;
-      max-height: 140rpx;
-      overflow: auto;
+      // max-height: 140rpx;
+      // overflow: auto;
       .textarea {
         width: 100%;
       }
@@ -150,7 +180,6 @@ export default {
       .icon {
         width: 29rpx;
       }
-      // height: 16rpx;
     }
   }
 }

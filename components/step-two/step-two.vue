@@ -7,13 +7,23 @@
       </div>
 
       <div class="has-content" v-else>
-        <div class="item" v-for="(item, index) in hasDoneArr" :key="index">
+        <div
+          class="item"
+          :class="{ preview:previewIndex===index }"
+          v-for="(item, index) in hasDoneArr"
+          :key="index"
+          @click="preview(index)"
+        >
           <image mode="aspectFit" class="pic" :src="item"></image>
-          <div class="close-icon-wrap" @click="removeOne(index)">
+          <div
+            v-if="previewIndex!==index"
+            class="close-icon-wrap"
+            @click.stop="removeOne(index)"
+          >
             <div class="close-icon"></div>
           </div>
         </div>
-        <div class="add" @click="toCamera">
+        <div class="add" v-if="hasDoneArr.length<6" @click="toCamera">
           <div class="close-icon"></div>
         </div>
       </div>
@@ -26,7 +36,9 @@ import { mapState } from "vuex";
 
 export default {
   data() {
-    return {};
+    return {
+      previewIndex: -1,
+    };
   },
   created() {},
   computed: {
@@ -40,6 +52,13 @@ export default {
   },
   mounted() {},
   methods: {
+    preview(i) {
+      if(this.previewIndex===-1){
+        this.previewIndex = i
+      }else{
+        this.previewIndex=-1
+      }
+    },
     toCamera() {
       this.$toPage("camera");
     },
@@ -105,11 +124,34 @@ export default {
 
         border-radius: 4rpx;
         background: #e8e8e8;
+        // transition: all 0.4s;
+
         &:nth-child(3n) {
           margin-right: 0;
         }
+
+        &.preview {
+          z-index: 8;
+          width: 100vw;
+          height: 100vh;
+          position: fixed;
+          top: 0;
+          left: 0;
+          background: rgb(0, 0, 0);
+          .pic {
+            width: 100vw;
+            height: 100vh;
+          }
+          // position: fixed;
+          // z-index: 8;
+          // top:0;
+          // left:0;
+          // height: 100vh;
+          // width: 100vw;
+        }
         .pic {
-          width: 180rpx;
+          transition: all 0.4s;
+          width: 100%;
           height: 240rpx;
         }
         .close-icon-wrap {

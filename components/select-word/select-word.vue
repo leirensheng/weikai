@@ -159,6 +159,8 @@ export default {
     justify-content: space-between;
     .btn-primary,.btn{
       width: 48% !important;
+      font-size: 28rpx;
+      height: 80rpx;
     }
   }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="66px" height="24px" viewBox="0 0 66 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 2</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FF782E" offset="0%"></stop>
+            <stop stop-color="#D65209" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="我的报告" transform="translate(-28.000000, -214.000000)">
+            <g id="编组-7" transform="translate(28.000000, 214.000000)">
+                <g id="编组-2" transform="translate(0.000000, 0.000000)">
+                    <path d="M0,0 L61,0 L61,21 C61,22.6568542 59.6568542,24 58,24 L3,24 C1.34314575,24 2.02906125e-16,22.6568542 0,21 L0,0 L0,0 Z" id="矩形" fill="url(#linearGradient-1)"></path>
+                    <polygon id="矩形备份" fill="#A73B00" points="61 0 65.3868023 3 61 3"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

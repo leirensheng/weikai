@@ -68,12 +68,20 @@ export default {
       uni.navigateBack();
     },
     async takeOne() {
+      if (this.hasDoneArr.length >= 6) {
+        uni.showToast({
+          icon: "none",
+          title: '最多只能选择6张图片',
+          duration: 2000,
+        });
+        return;
+      }
       let url = await this.takePhoto();
       this.hasDoneArr.push(url);
     },
     async chooseOne() {
-      let url = await this.chooseImage();
-      this.hasDoneArr.push(url);
+      let urlArr = await this.chooseImage();
+      this.hasDoneArr.push(...urlArr);
     },
 
     takePhoto() {
@@ -99,11 +107,11 @@ export default {
     chooseImage() {
       return new Promise((resolve, reject) => {
         uni.chooseImage({
-          count: 1,
+          count: 6 - this.hasDoneArr.length,
           sizeType: ["original", "compressed"],
           sourceType: ["album"], //这要注意，camera掉拍照，album是打开手机相册
           success: (res) => {
-            resolve(res.tempFilePaths[0]);
+            resolve(res.tempFilePaths);
           },
           fail: (e) => {
             reject(e);
@@ -158,7 +166,7 @@ export default {
       align-items: center;
       justify-content: space-around;
 
-     @include fixed-bottom(54rpx) ;
+      @include fixed-bottom(54rpx);
       .desc {
         font-weight: bold;
         font-size: 32rpx;

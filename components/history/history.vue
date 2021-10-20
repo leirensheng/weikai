@@ -24,8 +24,7 @@
         ></history-search>
       </div>
     </div>
-    <reject-message v-model="isShowReject"></reject-message>
-    <agree-message v-model="isShowAgree"></agree-message>
+
   </div>
 </template>
 
@@ -41,11 +40,9 @@ export default {
       loading: false,
       history: [],
       collected: 0,
-      scrollId: "",
       isShowFrame: false,
       noMore: false,
-      isShowReject: false,
-      isShowAgree: false,
+      page: 1
     };
   },
   props: {
@@ -75,7 +72,7 @@ export default {
 
     needWaitAndRefresh() {
       return (
-        !this.collected && this.firstPageData.some((one) => one.genStatus === 0)
+        !this.collected && this.firstPageData.some((one) => one.reportStatus === 0)
       );
     },
     firstPageData() {
@@ -84,7 +81,7 @@ export default {
     params() {
       return {
         collected: this.collected,
-        scrollId: this.scrollId,
+        page: this.page
       };
     },
   },
@@ -113,7 +110,6 @@ export default {
       immediate: true,
       handler(val) {
         if (val) {
-          this.checkIfShowPic();
           this.checkAndLoadData();
         }
       },
@@ -137,7 +133,6 @@ export default {
       "setNeedRefreshAll",
       "setNeedRefreshCollect",
       "setNeedRefreshLeft",
-      "setSubscribe",
     ]),
     startWait() {
       let waitTime = 5 * 60 * 1000
@@ -146,7 +141,7 @@ export default {
       }
       timer = setTimeout(async () => {
         console.log("检查一次");
-        let data = await getHistory({ ...this.params, scrollId: "" });
+        let data = await getHistory({ ...this.params, page: 1 });
         if (timer) {
           let isWaitContinue = this.checkAndRefresh(data);
 
@@ -162,10 +157,10 @@ export default {
     checkAndRefresh(data) {
       let total = 0;
       this.firstPageData.forEach((one, index) => {
-        let newVal = data[index].genStatus;
-        let isChange = one.genStatus !== newVal;
+        let newVal = data[index].reportStatus;
+        let isChange = one.reportStatus !== newVal;
         if (isChange) {
-          one.genStatus = newVal;
+          one.reportStatus = newVal;
         }
         total += newVal;
       });
@@ -187,7 +182,7 @@ export default {
       }
 
       this.isShowFrame = true;
-      this.scrollId = "";
+      this.page = 1;
       this.history = [];
       this.noMore = false;
       let minDelayGetData = this.minDelay(this.getData, 350);
@@ -229,15 +224,7 @@ export default {
       this.setNeedRefreshCollect(false);
       this.setNeedRefreshLeft(false);
     },
-    checkIfShowPic() {
-      let isSubscribeOk = this.$store.state.isSubscribeOk;
-      if (typeof isSubscribeOk === "boolean") {
-        this.isShowAgree = isSubscribeOk;
-        this.isShowReject = !isSubscribeOk;
-        this.setSubscribe(undefined);
-        this.collected = 0;
-      }
-    },
+
     checkIsNoMore(data) {
       this.noMore = data.length < 10;
     },
@@ -246,8 +233,8 @@ export default {
       this.loading = true;
       try {
         let data = await getHistory(this.params);
-        if (data.length) {
-          this.scrollId = data.slice(-1)[0].id;
+        if (data.length===10) {
+          this.page++
         }
         this.checkIsNoMore(data);
         this.history.push(...data);

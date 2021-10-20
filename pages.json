@@ -20,6 +20,12 @@
 			}
 		},
 		{
+			"path": "pages/report/index",
+			"style": {
+				"navigationBarTitleText": "公示信息对比报告"
+			}
+		},
+		{
 			"path": "pages/user/index",
 			"style": {
 				"navigationBarTitleText": "我的报告",

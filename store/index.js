@@ -2,18 +2,22 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
-
+let getStr  =(arr)=>arr.sort((a,b)=>a-b).join('')
 const store = new Vuex.Store({
   state: {
     clipData: "",
     needRefreshAll: false,
     needRefreshLeft: false,
     needRefreshCollect: false,
-    isSubscribeOk: undefined,
     hasDoneArr: [],
+    toCompareArr: [],
     form: {},
+    isAppShowRead:true
   },
   mutations: {
+    setAppShowRead(state,val){
+      state.isAppShowRead = val
+  },
     setClipData(state, val) {
       state.clipData = val;
     },
@@ -26,12 +30,19 @@ const store = new Vuex.Store({
     setNeedRefreshCollect(state, val) {
       state.needRefreshCollect = val;
     },
-    setSubscribe(state, val) {
-      state.isSubscribeOk = val;
+    setCompareArr(state,val){
+      state.toCompareArr =val
     },
+    setHasDoneArr(state,val){
+      state.hasDoneArr =val
+    }
+
   },
   actions: {},
   getters: {
+    isChangeArr(state){
+      return getStr(state.toCompareArr)!== getStr(state.hasDoneArr)
+    },
     lastUrl(state) {
       if (state.hasDoneArr.length) {
         return state.hasDoneArr.slice(-1)[0];

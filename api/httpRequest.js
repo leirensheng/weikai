@@ -1,11 +1,11 @@
 import env from "./getEnv.js";
 let map = {
   // develop:'http://192.168.1.206:38080/intelligent-identify',
-  develop: "https://intelligent.gdcers.com/intelligent-identify",
+  develop: "http://192.168.2.4:48080/product-report",
 
-  trial: "https://intelligent.gdcers.com/intelligent-identify",
+  trial: "http://192.168.2.4:48080/product-report",
 };
-let baseUrl = map[env] || "https://intelligent.gdcers.com/intelligent-identify";
+let baseUrl = map[env] || "http://192.168.2.4:48080/product-report";
 let http = (option) => {
   let { timeout = 60000, data, method = "get", url } = option;
   return new Promise((resolve, reject) => {

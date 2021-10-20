@@ -70,6 +70,7 @@ Vue.prototype.$getClip = () => {
     });
   });
 };
+Vue.prototype.$getId = () => Math.random().toString(36).substr(3, 8);
 
 Vue.prototype.$isUrl = (val) => val.indexOf("http") !== -1;
 App.mpType = "app";
