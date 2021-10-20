@@ -8,13 +8,21 @@
         @click="back"
       ></image>
     </div>
-    <div class="scan" v-if="!src">
+    <div class="scan">
       <camera
         device-position="back"
         flash="auto"
         @error="error"
         class="camera"
       ></camera>
+
+      <image
+        mode="widthFix"
+        :src="curPreview"
+        class="preview"
+        :class="{ show: isShowPreview }"
+      ></image>
+
       <div class="bottom">
         <div class="local" @click="chooseOne">
           <image class="pic" mode="widthFix" src="/static/camera2.svg"></image>
@@ -48,10 +56,11 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      src: "",
       top: "",
+      curPreview: "",
       height: "",
       data: {},
+      isShowPreview: false,
     };
   },
   computed: {
@@ -71,13 +80,20 @@ export default {
       if (this.hasDoneArr.length >= 6) {
         uni.showToast({
           icon: "none",
-          title: '最多只能选择6张图片',
+          title: "最多只能选择6张图片",
           duration: 2000,
         });
         return;
       }
       let url = await this.takePhoto();
-      this.hasDoneArr.push(url);
+      this.isShowPreview = true;
+      this.curPreview = url;
+
+      setTimeout(() => {
+        this.curPreview = "";
+        this.isShowPreview = false;
+        this.hasDoneArr.push(url);
+      }, 500);
     },
     async chooseOne() {
       let urlArr = await this.chooseImage();
@@ -155,7 +171,27 @@ export default {
       height: 100%;
       width: 100%;
     }
-
+    .preview {
+      visibility: hidden;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      transform-origin: 90% 90%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      opacity: 1;
+      &.show {
+        visibility: visible;
+        animation: smaller 0.5s ease-in-out;
+        @keyframes smaller {
+          to {
+            transform: scale(0);
+            opacity: 0;
+          }
+        }
+      }
+    }
     .bottom {
       color: white;
       position: fixed;
@@ -165,6 +201,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-around;
+      z-index: 4;
 
       @include fixed-bottom(54rpx);
       .desc {

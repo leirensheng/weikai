@@ -150,7 +150,7 @@ export default {
           // width: 100vw;
         }
         .pic {
-          transition: all 0.4s;
+          transition: all 0.3s ease-in-out;
           width: 100%;
           height: 240rpx;
         }
