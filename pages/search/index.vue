@@ -69,6 +69,7 @@ export default {
   },
   data() {
     return {
+      isError:false,
       url: "",
       basedataId: "",
       batchId: "",
@@ -171,7 +172,7 @@ export default {
       });
     },
     async next() {
-      if (this.curStep === 1 && this.isChangeArr) {
+      if (this.curStep === 1 && (this.isChangeArr || this.isError)) {
         await this.uploadAndAnalyse();
       }
       this.curStep++;
@@ -182,8 +183,14 @@ export default {
       uni.showLoading({
         title: "图片识别中",
       });
-      await this.upload(batchId);
-      await this.analyse(batchId);
+      try{
+        await this.upload(batchId);
+        await this.analyse(batchId);
+        this.isError = false
+      }catch(e){
+        this.isError = true
+        throw new Error(e)
+      }
       uni.hideLoading();
     },
     async analyse(batchId) {
