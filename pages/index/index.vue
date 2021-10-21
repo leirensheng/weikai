@@ -8,6 +8,7 @@
           :current="current"
           @change="handleChange"
           circular
+          :interval="2000"
           :indicator-dots="false"
           :autoplay="true"
         >
