@@ -36,6 +36,9 @@ import { generate, uploadPic, analyse } from "@/api/eye.js";
 export default {
   mixins: [subscribeMixin],
   computed: {
+    isChangeUrl() {
+      return this.url !== this.oldUrl;
+    },
     isDisableReport() {
       return (
         Object.values(this.form).filter(Boolean).length === 0 || this.loading
@@ -73,6 +76,7 @@ export default {
     return {
       isError: false,
       url: "",
+      oldUrl: "",
       basedataId: "",
       batchId: "",
       loading: false,
@@ -176,6 +180,12 @@ export default {
     async next() {
       if (this.curStep === 1 && (this.isChangeArr || this.isError)) {
         await this.uploadAndAnalyse();
+      } else if (this.curStep === 0) {
+        if (this.isChangeUrl) {
+          this.setHasDoneArr([]);
+          this.setCompareArr([]);
+        }
+        this.oldUrl = this.url;
       }
       this.curStep++;
     },

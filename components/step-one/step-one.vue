@@ -56,12 +56,16 @@ export default {
       title: "加载中",
     });
     let data = await getSample();
-    this.items = data.map((one) => ({ ...one, productLink: "https://detail.vip.com/detail-1710616951-6919462142443405399.html" }));
+    this.items = data.map((one,index) => ({
+      ...one,
+      productLink:
+        `https://detail.vip.com/detail-1710616951-6919462142443405399${index}.html`,
+    }));
     uni.hideLoading();
   },
   mounted() {},
   methods: {
-    setValue({ productLink, productName,id }) {
+    setValue({ productLink, productName, id }) {
       this.selectedName = productName;
       this.$emit("input", productLink);
       this.$emit("update:basedataId", id);
@@ -71,8 +75,7 @@ export default {
     clear() {
       this.selectedName = "";
       this.$emit("input", "");
-      this.$emit("update:basedataId", '');
-
+      this.$emit("update:basedataId", "");
     },
     openDialog() {
       this.isShowDialog = true;
@@ -134,6 +137,7 @@ export default {
     padding: 48rpx 0 28rpx 0;
     color: #999;
     border-bottom: 1rpx solid currentColor;
+    font-size: 32rpx;
     .black {
       color: black;
     }
