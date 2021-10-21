@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>1</title>
-    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" font-family="Arial-Black, Arial Black" font-size="36" font-weight="700">
-        <g id="步骤2" transform="translate(-53.000000, -106.000000)" fill="#000000">
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="步骤2" transform="translate(-53.000000, -106.000000)" fill="#000000" fill-rule="nonzero">
             <g id="编组-2" transform="translate(53.000000, 93.000000)">
-                <text id="1">
-                    <tspan x="1.99414062" y="40">1</tspan>
-                </text>
+                <path d="M19.6953125,40 L19.6953125,13.7910156 L13.7714844,13.7910156 C13.0097656,15.4082031 11.9550781,16.7675781 10.6074219,17.8691406 C9.25976562,18.9707031 7.3671875,19.9140625 4.9296875,20.6992188 L4.9296875,20.6992188 L4.9296875,26.5703125 C6.58203125,26.0664062 7.95605469,25.5390625 9.05175781,24.9882812 C10.1474609,24.4375 11.28125,23.7167969 12.453125,22.8261719 L12.453125,22.8261719 L12.453125,40 L19.6953125,40 Z" id="1"></path>
             </g>
         </g>
     </g>
