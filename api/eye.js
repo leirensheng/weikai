@@ -35,9 +35,8 @@ export function getHistory({ page, collected }) {
 }
 
 export function getDetail(id) {
-  let openId = uni.getStorageSync("openId");
   return request({
-    url: `/report/getReport/${openId}/${id}`,
+    url: `/report/getReport/${id}`,
   });
 }
 
