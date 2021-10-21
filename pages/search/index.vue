@@ -97,7 +97,7 @@ export default {
       this.isLogin = val;
     },
     toReport() {
-      uni.switchTab({
+      uni.reLaunch({
         url: "/pages/user/index",
       });
     },
