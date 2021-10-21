@@ -184,7 +184,6 @@ export default {
       let arr = val
         .map((one, index) => this.getMark(one, baseStandardArr[index]))
         .map((one) => `<div>${one}${isOnlyOne ? "" : "、"}</div>`);
-      console.log(arr);
       return arr.join("");
     },
     getShowHtml(val, base, isMultiple, id) {
@@ -198,8 +197,7 @@ export default {
       let otherStr = "";
       if (isMultiple) {
         let arr = (val || []).slice(1);
-        let className = "grey has-top";
-        arr = arr.map((one) => `<div class="${className}">${one}</div>`);
+        arr = arr.map((one) => `<div class="grey has-top">${one}</div>`);
         otherStr = arr.join("");
       }
       return markStr + otherStr;

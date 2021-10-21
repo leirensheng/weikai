@@ -96,25 +96,7 @@ div {
   top: 0;
   z-index: 33;
 }
-.hight-title {
-  font-size: 32rpx;
-  line-height: 44rpx;
-  color: rgba(0, 0, 0, 0.85);
-  padding-left: 28rpx;
-  font-weight: 500;
-  position: relative;
-  &:before {
-    display: block;
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    height: 80%;
-    transform: translateY(-50%);
-    width: 12rpx;
-    background: #004dcd;
-  }
-}
+
 .frame-light {
   position: absolute;
   top: 0;
@@ -136,25 +118,7 @@ div {
     background-position-x: -250%;
   }
 }
-.no-data {
-  padding: 64rpx 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  .icon {
-    transform: translateX(5%);
-    width: 384rpx;
-    height: 150rpx;
-  }
-  .desc {
-    width: 368rpx;
-    font-size: 28rpx;
-    line-height: 40rpx;
-    margin-top: 32rpx;
-    text-align: center;
-  }
-}
+
 .title-bg {
   position: relative;
   display: inline-block;

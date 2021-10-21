@@ -40,7 +40,7 @@ export default {
   background: 0 0;
   border-radius: 50%;
   border: 2px solid;
-  border-color: #e5e5e5 #e5e5e5 #e5e5e5 #5677fc;
+  border-color: #e5e5e5 #e5e5e5 #e5e5e5 #ff782e;
   animation: rotate 0.7s linear infinite;
 }
 

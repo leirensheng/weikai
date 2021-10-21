@@ -6,7 +6,9 @@
       :key="index"
       @click="change(item.id)"
     >
-      <div class="name" :class="{active:index===value}">{{ item.name }}</div>
+      <div class="name" :class="{ active: index === value }">
+        {{ item.name }}
+      </div>
     </div>
   </div>
 </template>
@@ -66,9 +68,8 @@ export default {
       font-size: 28rpx;
       color: #000000;
       line-height: 1;
-      &.active{
-        
-color: #FF782E;
+      &.active {
+        color: #ff782e;
       }
     }
   }
