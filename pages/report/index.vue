@@ -62,6 +62,7 @@ export default {
 
   data() {
     return {
+      isOk:true,
       config: [
         {
           name: "产品名称",
@@ -103,16 +104,14 @@ export default {
       return this.data.basedata || {};
     },
     isConsistentName() {
-      return this.data.isConsistent === 1
+      return this.isOk
         ? "该产品网页展示信息与实物铭牌展示信息一致"
         : "该产品网页展示信息与实物铭牌展示信息存在差异";
     },
     showDate() {
       return this.$formatTime(this.data.createTime, true);
     },
-    isOk() {
-      return this.data.isConsistent === 1;
-    },
+
     src() {
       let type = this.isOk ? "success" : "danger";
       return `/static/${type}.svg`;
@@ -183,12 +182,12 @@ export default {
       let isOnlyOne = val.length === 1;
       let arr = val
         .map((one, index) => this.getMark(one, baseStandardArr[index]))
-        .map((one,index) => {
-          let isLast = index === val.length-1
-          return `<div>${one}${isOnlyOne||isLast ? "" : "、"}</div>`
+        .map((one, index) => {
+          let isLast = index === val.length - 1;
+          return `<div>${one}${isOnlyOne || isLast ? "" : "、"}</div>`;
         });
 
-      return arr.join("").slice(0,-2);
+      return arr.join("").slice(0, -2);
     },
     getShowHtml(val, base, isMultiple, id) {
       if (this.loading) return "";
@@ -208,9 +207,13 @@ export default {
     },
     getMark(val, base) {
       let arr = String(val).split("");
-      let res = arr.map((one, index) =>
-        !base || base[index] !== one ? `<span class="red">${one}</span>` : one
-      );
+      let res = arr.map((one, index) => {
+        let isDifferent = !base || base[index] !== one;
+        if(isDifferent){
+            this.isOk = false
+        }
+        return isDifferent ? `<span class="red">${one}</span>` : one;
+      });
       return res.join("");
     },
     backFromLogin(val) {
