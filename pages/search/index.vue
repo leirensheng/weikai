@@ -82,7 +82,7 @@ export default {
     uni.$on("loginStatus", this.setLoginStatus);
   },
   onUnload() {
-    this.reset()
+    this.reset();
     uni.$off("loginStatus", this.setLoginStatus);
   },
   mounted() {},
@@ -145,15 +145,15 @@ export default {
       });
       this.setNeedRefreshLeft(true);
       uni.hideLoading();
-      this.reset();
       this.loading = false;
       this.toReport();
+      this.reset();
     },
     reset() {
       this.setHasDoneArr([]);
       this.setCompareArr([]);
       this.url = "";
-      this.basedataId = ""
+      this.basedataId = "";
       this.batchId = "";
       this.loading = false;
       this.curStep = "";
@@ -163,7 +163,7 @@ export default {
     setTitle() {
       let map = {
         0: "复制商品链接",
-        1: "产品名牌拍照",
+        1: "产品铭牌拍照",
         2: "铭牌信息确认",
       };
       uni.setNavigationBarTitle({
@@ -224,9 +224,19 @@ export default {
     .btn-primary {
       height: 80rpx;
       font-size: 28rpx;
-      margin: 0 22rpx;
-      flex: 1;
-      // margin-bottom: 48rpx;
+      width: 340rpx;
+      flex-grow: 0;
+      flex-shrink: 0;
+      justify-content: center;
+      margin: 0;
+      &:only-child {
+        width: 640rpx;
+      }
+    }
+    .btn-primary {
+      &:first-child {
+        margin-right: 22rpx;
+      }
     }
   }
 }

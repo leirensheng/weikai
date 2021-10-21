@@ -182,7 +182,7 @@ export default {
       let toCompare = isMultiple && Array.isArray(val) ? val[0] : val;
       let markStr = this.getMark(toCompare, base);
       let isStandard = id === "standard";
-      if (isStandard && (val||[]).length>1) {
+      if (isStandard && (val || []).length > 1) {
         markStr += "、";
       }
       let otherStr = "";
@@ -222,7 +222,7 @@ export default {
       if (!openId) return;
       this.loading = true;
       let data = await getDetail(this.id);
-      data.basedata.standard = data.basedata.standard.split('、').join('、\n')
+      data.basedata.standard = data.basedata.standard.split("、").join("、\n");
 
       this.data = data;
       this.isCollected = this.data.isCollection;
@@ -331,7 +331,9 @@ export default {
     }
   }
   .tr {
-    border-top: 2rpx solid #e8e8e8;
+    &:nth-child(2){
+      border-top: 2rpx solid #e8e8e8;
+    }
     border-bottom: 2rpx solid #e8e8e8;
     display: flex;
     padding: 29rpx 0;

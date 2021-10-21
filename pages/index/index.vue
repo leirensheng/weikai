@@ -7,6 +7,7 @@
           class="swiper"
           :current="current"
           @change="handleChange"
+          circular
           :indicator-dots="false"
           :autoplay="true"
         >
@@ -90,6 +91,7 @@ export default {
           margin-top: 86rpx;
         }
         .desc-wrap {
+          transform: translateY(-1px);
           border-top: 2rpx solid #3f3d56;
         }
       }
@@ -130,6 +132,7 @@ export default {
   }
   .hightlight {
     color: #e9631a;
+    font-weight: bold;
   }
 }
 </style>

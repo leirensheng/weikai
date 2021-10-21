@@ -1,5 +1,5 @@
 <template>
-  <div class="catalog-dialog">
+  <div class="catalog-dialog" :catchtouchmove="noop">
     <div v-show="value" class="mask" @click="toggle" />
     <div class="content-wrap" :class="{ show: value }">
       <slot></slot>

@@ -87,6 +87,9 @@ div {
   display: flex;
   justify-content: center;
   align-items: center;
+  &:after{
+    border: none;
+  }
 }
 .sticky {
   position: sticky;
