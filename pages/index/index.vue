@@ -10,7 +10,7 @@
           circular
           :interval="2000"
           :indicator-dots="false"
-          :autoplay="true"
+          :autoplay="autoplay"
         >
           <swiper-item v-for="(item, index) in items" :key="index">
             <div class="item">
@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       current: 0,
+      autoplay: false,
       items: [
         {
           pic: "/static/index1.svg",
@@ -51,13 +52,21 @@ export default {
       ],
     };
   },
+  onShow() {
+    this.current = 0;
+    this.autoplay = true;
+  },
+  onHide() {
+    this.current = 0;
+    this.autoplay = false;
+  },
   created() {},
   mounted() {},
   methods: {
     toSearch() {
       uni.reLaunch({
-        url:'/pages/search/index'
-      })
+        url: "/pages/search/index",
+      });
     },
     handleChange(e) {
       this.current = e.detail.current;
