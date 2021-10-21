@@ -21,7 +21,7 @@
     <div class="wrap frame frame-light" :class="!isShowFrame && 'hidden'">
       <div class="title">
         <div class="line"></div>
-        <div class="line"></div>
+        <!-- <div class="line"></div> -->
       </div>
 
       <div class="bottom">
@@ -160,9 +160,9 @@ export default {
         background: $grey;
         margin: 6rpx 0;
         height: 28rpx;
-        &:first-child {
-          margin-bottom: 12rpx;
-        }
+        // &:first-child {
+        //   margin-bottom: 12rpx;
+        // }
       }
     }
     .bottom {

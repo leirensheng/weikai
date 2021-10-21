@@ -134,7 +134,7 @@ export default {
   async onShareAppMessage() {
     this.setAppShowRead(false);
     return {
-      title: "报告详情",
+      title: "公示信息对比报告",
       path: "/pages/report/index?id=" + this.id,
     };
   },
@@ -334,9 +334,9 @@ export default {
     border-top: 2rpx solid #e8e8e8;
     border-bottom: 2rpx solid #e8e8e8;
     display: flex;
-    padding: 16rpx 0;
+    padding: 29rpx 0;
     .td0 {
-      line-height: 60rpx;
+      line-height: 34rpx;
       font-weight: 400;
       font-size: 24rpx;
       color: black;

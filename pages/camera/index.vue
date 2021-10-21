@@ -56,6 +56,7 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      isDisabled: false,
       top: "",
       curPreview: "",
       height: "",
@@ -77,6 +78,9 @@ export default {
       uni.navigateBack();
     },
     async takeOne() {
+      if (this.isDisabled) {
+        return;
+      }
       if (this.hasDoneArr.length >= 6) {
         uni.showToast({
           icon: "none",
@@ -85,6 +89,7 @@ export default {
         });
         return;
       }
+      this.isDisabled = true;
       let url = await this.takePhoto();
       this.isShowPreview = true;
       this.curPreview = url;
@@ -93,9 +98,13 @@ export default {
         this.curPreview = "";
         this.isShowPreview = false;
         this.hasDoneArr.push(url);
+        this.isDisabled = false;
       }, 500);
     },
     async chooseOne() {
+      if (this.isDisabled) {
+        return;
+      }
       let urlArr = await this.chooseImage();
       this.hasDoneArr.push(...urlArr);
     },
