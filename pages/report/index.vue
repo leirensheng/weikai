@@ -94,7 +94,7 @@ export default {
       data: {},
       isCollected: false,
       isOwner: false,
-      loading: false,
+      loading: true,
     };
   },
 
@@ -178,23 +178,28 @@ export default {
     }
   },
   methods: {
+    getStandardHtml(val) {
+      let baseStandardArr = this.data.basedata.standard.split("、\n");
+      let isOnlyOne = val.length === 1;
+      let arr = val
+        .map((one, index) => this.getMark(one, baseStandardArr[index]))
+        .map((one) => `<div>${one}${isOnlyOne ? "" : "、"}</div>`);
+      console.log(arr);
+      return arr.join("");
+    },
     getShowHtml(val, base, isMultiple, id) {
+      if (this.loading) return "";
+      let isStandard = id === "standard";
+      if (isStandard) {
+        return this.getStandardHtml(val);
+      }
       let toCompare = isMultiple && Array.isArray(val) ? val[0] : val;
       let markStr = this.getMark(toCompare, base);
-      let isStandard = id === "standard";
-      if (isStandard && (val || []).length > 1) {
-        markStr += "、";
-      }
       let otherStr = "";
       if (isMultiple) {
         let arr = (val || []).slice(1);
-        let className = isStandard ? "has-top" : "grey has-top";
-
-        arr = arr.map((one, index) => {
-          let content =
-            isStandard && index !== arr.length - 1 ? one + "、" : one;
-          return `<div class="${className}">${content}</div>`;
-        });
+        let className = "grey has-top";
+        arr = arr.map((one) => `<div class="${className}">${one}</div>`);
         otherStr = arr.join("");
       }
       return markStr + otherStr;
@@ -331,7 +336,7 @@ export default {
     }
   }
   .tr {
-    &:nth-child(2){
+    &:nth-child(2) {
       border-top: 2rpx solid #e8e8e8;
     }
     border-bottom: 2rpx solid #e8e8e8;
