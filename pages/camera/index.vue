@@ -107,6 +107,7 @@ export default {
       }
       let urlArr = await this.chooseImage();
       this.hasDoneArr.push(...urlArr);
+      this.back()
     },
 
     takePhoto() {
