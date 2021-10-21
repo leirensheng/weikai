@@ -55,7 +55,9 @@ export default {
   mounted() {},
   methods: {
     toSearch() {
-      this.$toPage("search");
+      uni.reLaunch({
+        url:'/pages/search/index'
+      })
     },
     handleChange(e) {
       this.current = e.detail.current;

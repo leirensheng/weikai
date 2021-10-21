@@ -37,7 +37,9 @@ export default {
   mixins: [subscribeMixin],
   computed: {
     isDisableReport() {
-      return Object.values(this.form).filter(Boolean).length === 0|| this.loading;
+      return (
+        Object.values(this.form).filter(Boolean).length === 0 || this.loading
+      );
     },
     ...mapState(["hasDoneArr", "form"]),
     ...mapGetters(["lastUrl", "isChangeArr"]),
@@ -45,7 +47,7 @@ export default {
       if (this.curStep === 0) {
         return this.url.length === 0;
       } else if (this.curStep === 1) {
-        return this.lastUrl === ""|| this.loading;
+        return this.lastUrl === "" || this.loading;
       }
     },
   },
@@ -69,7 +71,7 @@ export default {
   },
   data() {
     return {
-      isError:false,
+      isError: false,
       url: "",
       basedataId: "",
       batchId: "",
@@ -183,17 +185,18 @@ export default {
       uni.showLoading({
         title: "图片识别中",
       });
-      this.loading = true
-      try{
+      this.loading = true;
+      try {
         await this.upload(batchId);
         await this.analyse(batchId);
-        this.isError = false
-      }catch(e){
-        this.isError = true
-        throw new Error(e)
+        this.isError = false;
+      } catch (e) {
+        this.isError = true;
+        throw new Error(e);
+      } finally {
+        this.loading = false;
+        uni.hideLoading();
       }
-      this.loading = false
-      uni.hideLoading();
     },
     async analyse(batchId) {
       this.result = await analyse(batchId);
