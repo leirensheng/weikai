@@ -70,7 +70,7 @@ export default {
         )
         .map((one) => one.word);
       let str = arr.join("");
-      this.$emit("confirm", str);
+      this.$emit("confirm", str, arr);
       this.close();
     },
     toggleSelect(one) {
@@ -85,7 +85,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.select-word-wrap{
+.select-word-wrap {
   background: white;
 }
 .select-word {
@@ -157,7 +157,8 @@ export default {
     margin-bottom: 8rpx;
     display: flex;
     justify-content: space-between;
-    .btn-primary,.btn{
+    .btn-primary,
+    .btn {
       width: 48% !important;
       font-size: 28rpx;
       height: 80rpx;

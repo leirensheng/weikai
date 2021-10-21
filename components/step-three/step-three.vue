@@ -12,7 +12,7 @@
           /> -->
       <div class="textarea-wrap">
         <textarea
-         v-if="isReady"
+          v-if="isReady"
           :maxlength="-1"
           auto-height
           class="textarea"
@@ -64,7 +64,7 @@ export default {
         },
         {
           name: "商品条码",
-          id: "code",
+          id: "productCode",
         },
         ...factures,
         ...addrs,
@@ -94,7 +94,7 @@ export default {
               value = val.standards.join("、\n");
             }
             this.$set(this.form, one.id, value);
-            this.isReady = true
+            this.isReady = true;
           });
         });
       },
@@ -108,7 +108,7 @@ export default {
   },
   data() {
     return {
-      isReady:false,
+      isReady: false,
       editingId: "",
       dialogShow: false,
     };
@@ -124,8 +124,9 @@ export default {
         id: `${key + (index + 1)}`,
       }));
     },
-    setValue(val) {
-      this.form[this.editingId] = val;
+    setValue(val, arr) {
+      let value = this.editingId === "standard" ? arr.join("、\n") : val;
+      this.form[this.editingId] = value;
     },
     showDailog(id) {
       this.editingId = id;
