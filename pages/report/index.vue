@@ -183,8 +183,12 @@ export default {
       let isOnlyOne = val.length === 1;
       let arr = val
         .map((one, index) => this.getMark(one, baseStandardArr[index]))
-        .map((one) => `<div>${one}${isOnlyOne ? "" : "、"}</div>`);
-      return arr.join("");
+        .map((one,index) => {
+          let isLast = index === val.length-1
+          return `<div>${one}${isOnlyOne||isLast ? "" : "、"}</div>`
+        });
+
+      return arr.join("").slice(0,-2);
     },
     getShowHtml(val, base, isMultiple, id) {
       if (this.loading) return "";

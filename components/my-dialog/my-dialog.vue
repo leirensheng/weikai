@@ -1,6 +1,6 @@
 <template>
   <div class="catalog-dialog" :catchtouchmove="noop">
-    <div v-show="value" class="mask" @click="toggle" />
+    <div v-show="value" class="mask" @click="toggle" @touchmove.stop />
     <div class="content-wrap" :class="{ show: value }">
       <slot></slot>
     </div>
