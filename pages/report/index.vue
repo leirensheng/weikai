@@ -193,8 +193,15 @@ export default {
     getStandardHtml(val) {
       let baseStandardArr = this.data.basedata.standard.split("、\n");
       let isOnlyOne = val.length === 1;
+
+      if (baseStandardArr.length !== val.length) {
+        this.isOk = false;
+      }
+
       let arr = val
-        .map((one, index) => this.getMark(one, baseStandardArr[index]))
+        .map(
+          (one, index) => this.getMark(one, baseStandardArr[index] || "").str
+        )
         .map((one, index) => {
           let isLast = index === val.length - 1;
           return `<div>${one}${isOnlyOne || isLast ? "" : "、"}</div>`;
@@ -212,30 +219,37 @@ export default {
         return this.getStandardHtml(val);
       }
       let toCompare = isMultiple && Array.isArray(val) ? val[0] : val;
-      let markStr = this.getMark(toCompare, base);
+      let { str: markStr, isDifferent } = this.getMark(toCompare, base);
       let otherStr = "";
       if (isMultiple) {
-        let isFirstMatch = markStr.indexOf("red") === -1;
+        let isFirstMatch = !isDifferent;
         let arr = (val || []).slice(1);
         arr = arr.map((one) =>
           isFirstMatch
             ? `<div class="grey has-top">${one}</div>`
-            : `<div class="has-top">${this.getMark(one, base)}</div>`
+            : `<div class="has-top">${this.getMark(one, base).str}</div>`
         );
         otherStr = arr.join("");
       }
       return markStr + otherStr;
     },
     getMark(val, base) {
+      let isDifferent = val.length !== base.length;
       let arr = String(val).split("");
       let res = arr.map((one, index) => {
-        let isDifferent = !base || base[index] !== one;
-        if (isDifferent) {
-          this.isOk = false;
+        let letterDiff = !base || base[index] !== one;
+        if (letterDiff) {
+          isDifferent = true;
         }
-        return isDifferent ? `<span class="red">${one}</span>` : one;
+        return letterDiff ? `<span class="red">${one}</span>` : one;
       });
-      return res.join("");
+      if (isDifferent) {
+        this.isOk = false;
+      }
+      return {
+        str: res.join(""),
+        isDifferent,
+      };
     },
     backFromLogin(val) {
       if (val) {
