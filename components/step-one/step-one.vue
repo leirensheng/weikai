@@ -18,8 +18,8 @@
       <image mode="widthFix" class="icon" src="/static/right.svg"></image>
     </div>
     <my-dialog v-model="isShowDialog">
-      <scroll-view class="scroll-Y" scroll-y="true">
-        <div class="dialog-content safe-bottom">
+      <scroll-view class="dialog-content scroll-Y" scroll-y="true">
+        <div class="safe-bottom">
           <div
             class="item"
             v-for="(item, index) in items"
