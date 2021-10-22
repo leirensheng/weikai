@@ -37,6 +37,7 @@ export function getHistory({ page, collected }) {
 export function getDetail(id) {
   return request({
     url: `/report/getReport/${id}`,
+    noHandleCode: true
   });
 }
 

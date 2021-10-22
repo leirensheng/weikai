@@ -7,7 +7,7 @@ let map = {
 };
 let baseUrl = map[env] || "https://cpsmszyzgj.gdcers.com/product-report";
 let http = (option) => {
-  let { timeout = 60000, data, method = "get", url } = option;
+  let { timeout = 60000, noHandleCode, data, method = "get", url } = option;
   return new Promise((resolve, reject) => {
     uni.request({
       url: baseUrl + url,
@@ -20,18 +20,22 @@ let http = (option) => {
       header: {},
       success: (res) => {
         let { msg, message, code, data } = res.data;
-        if (code !== 0) {
-          // 如果在请求结束后uni.hideLoading调用,shoast也会消失了
-          uni.hideLoading();
-          uni.showToast({
-            icon: "none",
-            title: msg || message,
-            duration: 2000,
-          });
-          reject(res.data);
-          return;
+        if (!noHandleCode) {
+          if (code !== 0) {
+            // 如果在请求结束后uni.hideLoading调用,shoast也会消失了
+            uni.hideLoading();
+            uni.showToast({
+              icon: "none",
+              title: msg || message,
+              duration: 2000,
+            });
+            reject(res.data);
+          } else {
+            resolve(data);
+          }
+        } else {
+          resolve(res.data);
         }
-        resolve(data);
       },
       fail: (res) => {
         uni.hideLoading();

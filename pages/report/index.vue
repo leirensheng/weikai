@@ -62,7 +62,7 @@ export default {
 
   data() {
     return {
-      isOk:true,
+      isOk: true,
       config: [
         {
           name: "产品名称",
@@ -209,8 +209,8 @@ export default {
       let arr = String(val).split("");
       let res = arr.map((one, index) => {
         let isDifferent = !base || base[index] !== one;
-        if(isDifferent){
-            this.isOk = false
+        if (isDifferent) {
+          this.isOk = false;
         }
         return isDifferent ? `<span class="red">${one}</span>` : one;
       });
@@ -231,7 +231,20 @@ export default {
       let openId = uni.getStorageSync("openId");
       if (!openId) return;
       this.loading = true;
-      let data = await getDetail(this.id);
+      let { msg, data } = await getDetail(this.id);
+      if (msg === "报告不存在！") {
+        uni.showToast({
+          icon: "none",
+          title: msg,
+          duration: 3000,
+        });
+        setTimeout(() => {
+          uni.reLaunch({
+            url: "/pages/index/index",
+          });
+        }, 3000);
+        return;
+      }
       data.basedata.standard = data.basedata.standard.split("、").join("、\n");
 
       this.data = data;
