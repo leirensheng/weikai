@@ -20,10 +20,7 @@
     <!-- 骨架 -->
     <div class="wrap frame frame-light" :class="!isShowFrame && 'hidden'">
       <div class="title">
-        <div class="line"></div>
-        <!-- <div class="line"></div> -->
       </div>
-
       <div class="bottom">
         <div class="date">{{ fackDate }}</div>
       </div>
@@ -85,7 +82,7 @@ export default {
 <style scoped lang="scss">
 .history-item {
   box-shadow: 0px 0px 12rpx 0px rgba(0, 0, 0, 0.15);
-  padding: 74rpx 24rpx 32rpx 32rpx;
+  padding: 80rpx 24rpx 37rpx 32rpx;
   border-radius: 16rpx;
   position: relative;
   .status-pic {
@@ -113,7 +110,7 @@ export default {
   .wrap {
     .title {
       font-size: 28rpx;
-      line-height: 40rpx;
+      line-height: 1;
       display: -webkit-box;
       word-break: break-all;
       overflow: hidden;
@@ -122,20 +119,20 @@ export default {
       -webkit-line-clamp: 2;
     }
     .bottom {
-      margin-top: 16rpx;
+      margin-top: 27rpx;
       display: flex;
       justify-content: space-between;
       align-items: center;
       .date {
         font-size: 24rpx;
-        line-height: 34rpx;
+        line-height: 1;
         color: #999999;
       }
       .left-time {
         font-size: 24rpx;
         font-weight: 400;
         color: #ff5a00;
-        // line-height: 34rpx;
+        line-height: 1;
         display: flex;
         align-items: center;
         .pic {
@@ -150,28 +147,17 @@ export default {
     display: none;
   }
   .frame {
-    line-height: 1;
     $grey: #ededed;
     color: $grey;
     position: relative;
     .title {
-      line-height: 1;
-      .line {
-        background: $grey;
-        margin: 6rpx 0;
         height: 28rpx;
-        // &:first-child {
-        //   margin-bottom: 12rpx;
-        // }
-      }
+        background: $grey;
     }
     .bottom {
       .date {
         background: $grey;
         color: $grey;
-        height: 24rpx;
-        margin: 5rpx 0;
-        line-height: 1;
       }
     }
   }
