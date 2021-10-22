@@ -171,7 +171,6 @@ export default {
     this.loading = true;
     let isLogin = await this.$checkLogin();
     if (!isLogin) {
-      this.loading = false;
       this.$toLogin();
     } else {
       await this.getDetail();
@@ -230,6 +229,8 @@ export default {
     backFromLogin(val) {
       if (val) {
         this.getDetail();
+      } else {
+        this.loading = false;
       }
     },
     ...mapMutations([
