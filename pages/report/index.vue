@@ -22,6 +22,7 @@
           <td class="td">{{ basedata[item.id] }}</td>
           <td
             class="td"
+            :class="{ center: checkIsCenter(item.id, data[item.id]) }"
             v-html="
               getShowHtml(
                 data[item.id],
@@ -177,7 +178,17 @@ export default {
     }
   },
   methods: {
+    checkIsCenter(id, val) {
+      if (this.loading) return false;
+      return id === "standard" && val.length === 0;
+    },
     getStandardHtml(val) {
+      if (val.length === 0) {
+        if (this.data.basedata.standard.length) {
+          this.isOk = false;
+        }
+        return `<div class="red">缺失</div>`;
+      }
       let baseStandardArr = this.data.basedata.standard.split("、\n");
       let isOnlyOne = val.length === 1;
       let arr = val
@@ -246,6 +257,7 @@ export default {
         return;
       }
       data.basedata.standard = data.basedata.standard.split("、").join("、\n");
+      data.standard = data.standard.filter(Boolean); //去掉空的[""]
 
       this.data = data;
       this.isCollected = this.data.isCollection;
@@ -374,6 +386,10 @@ export default {
       color: black;
       font-weight: 500;
       line-height: 34rpx;
+      &.center {
+        display: flex;
+        align-items: center;
+      }
     }
   }
   .bottom {
