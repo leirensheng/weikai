@@ -19,7 +19,7 @@
         </thead>
         <tr class="tr" v-for="(item, index) in config" :key="index">
           <td class="td0">{{ item.name }}</td>
-          <td class="td">{{ basedata[item.id]||'-' }}</td>
+          <td class="td">{{ basedata[item.id] || "-" }}</td>
           <td
             class="td"
             :class="{ center: checkIsCenter(data[item.id]) }"
@@ -179,16 +179,16 @@ export default {
   methods: {
     checkIsCenter(val) {
       if (this.loading) return false;
-      return  val.length === 0;
+      return val.length === 0;
     },
-    checkIsLose(id,val){
+    checkIsLose(id, val) {
       if (val.length === 0) {
         if (this.data.basedata[id].length) {
           this.isOk = false;
         }
-        return true
+        return true;
       }
-      return false
+      return false;
     },
     getStandardHtml(val) {
       let baseStandardArr = this.data.basedata.standard.split("、\n");
@@ -204,7 +204,7 @@ export default {
     },
     getShowHtml(val, base, isMultiple, id) {
       if (this.loading) return "";
-      if (this.checkIsLose(id,val)) {
+      if (this.checkIsLose(id, val)) {
         return `<div class="red">缺失</div>`;
       }
       let isStandard = id === "standard";
@@ -215,8 +215,13 @@ export default {
       let markStr = this.getMark(toCompare, base);
       let otherStr = "";
       if (isMultiple) {
+        let isFirstMatch = markStr.indexOf("red") === -1;
         let arr = (val || []).slice(1);
-        arr = arr.map((one) => `<div class="grey has-top">${one}</div>`);
+        arr = arr.map((one) =>
+          isFirstMatch
+            ? `<div class="grey has-top">${one}</div>`
+            : `<div class="has-top">${this.getMark(one, base)}</div>`
+        );
         otherStr = arr.join("");
       }
       return markStr + otherStr;
@@ -264,10 +269,10 @@ export default {
         return;
       }
       data.basedata.standard = data.basedata.standard.split("、").join("、\n");
-      let ids=['standard','manufacturer','manufacturerAddr']
-      ids.forEach(id=>{
+      let ids = ["standard", "manufacturer", "manufacturerAddr"];
+      ids.forEach((id) => {
         data[id] = data[id].filter(Boolean); //去掉空的[""]
-      })
+      });
 
       this.data = data;
       this.isCollected = this.data.isCollection;
