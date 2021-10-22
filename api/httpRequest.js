@@ -1,8 +1,6 @@
 import env from "./getEnv.js";
 let map = {
-  // develop:'http://192.168.1.206:38080/intelligent-identify',
   develop: "https://cpsmszyzgj.gdcers.com/product-report",
-
   trial: "https://cpsmszyzgj.gdcers.com/product-report",
 };
 let baseUrl = map[env] || "https://cpsmszyzgj.gdcers.com/product-report";

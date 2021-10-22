@@ -60,7 +60,7 @@ export default {
       ...one,
       productLink:
         `https://detail.vip.com/detail-1710616951-6919462142443405399${index}.html`,
-    }));
+    })).filter(one=> one.productName);
     uni.hideLoading();
   },
   mounted() {},

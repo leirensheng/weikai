@@ -51,7 +51,6 @@ export default {
     },
     src() {
       let name = this.isShowFrame ? "defaultStatus" : this.isIng ? "ing" : "ed";
-
       return "/static/" + name + ".svg";
     },
     desc() {
@@ -62,18 +61,10 @@ export default {
   mounted() {},
   methods: {
     toDetail() {
-      if (this.item.reportStatus === 0) return;
+      if (this.isIng|| this.isShowFrame) return;
       uni.navigateTo({
         url: "/pages/report/index?id=" + this.item.id,
       });
-    },
-
-    getStatus(status) {
-      let map = {
-        0: "需要花费1分钟生成...",
-        1: "报告已生成",
-      };
-      return map[status] || "";
     },
   },
 };
