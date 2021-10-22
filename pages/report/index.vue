@@ -22,7 +22,7 @@
           <td class="td">{{ basedata[item.id]||'-' }}</td>
           <td
             class="td"
-            :class="{ center: checkIsCenter(item.id, data[item.id]) }"
+            :class="{ center: checkIsCenter(data[item.id]) }"
             v-html="
               getShowHtml(
                 data[item.id],
@@ -132,7 +132,7 @@ export default {
     },
   },
   async onShareAppMessage() {
-    this.setAppShowRead(false);
+    // this.setAppShowRead(false);
     return {
       title: "公示信息对比报告",
       path: "/pages/report/index?id=" + this.id,
@@ -158,14 +158,14 @@ export default {
       this.setNeedRefreshCollect(true);
     }
   },
-  onShow() {
-    setTimeout(() => {
-      this.setAppShowRead(true);
-    }, 1000);
-  },
+  // onShow() {
+  //   setTimeout(() => {
+  //     this.setAppShowRead(true);
+  //   }, 1000);
+  // },
   async onLoad({ id }) {
     isFromUser = this.$getPrePath() === "pages/user/index";
-    this.setAppShowRead(false);
+    // this.setAppShowRead(false);
     uni.$on("loginStatus", this.backFromLogin);
     this.id = id;
     this.loading = true;
@@ -177,7 +177,7 @@ export default {
     }
   },
   methods: {
-    checkIsCenter(id, val) {
+    checkIsCenter(val) {
       if (this.loading) return false;
       return  val.length === 0;
     },
@@ -242,7 +242,7 @@ export default {
     ...mapMutations([
       "setNeedRefreshAll",
       "setNeedRefreshCollect",
-      "setAppShowRead",
+      // "setAppShowRead",
     ]),
 
     async getDetail() {

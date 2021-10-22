@@ -1,6 +1,6 @@
 <template>
-  <div class="catalog-dialog" :catchtouchmove="noop">
-    <div v-show="value" class="mask" @click="toggle" @touchmove.stop />
+  <div class="catalog-dialog" catchtouchmove>
+    <div v-show="value" class="mask" @click="toggle" />
     <div class="content-wrap" :class="{ show: value }">
       <slot></slot>
     </div>
@@ -20,13 +20,9 @@ export default {
     return {};
   },
   methods: {
-    noop() {
-      return false;
-    },
     toggle() {
       this.$emit("input", !this.value);
     },
-
   },
 };
 </script>
