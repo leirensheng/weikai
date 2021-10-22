@@ -263,7 +263,31 @@ export default {
       "setNeedRefreshCollect",
       // "setAppShowRead",
     ]),
-
+    handleData(data) {
+      this.sortStandard(data);
+      data.basedata.standard = data.basedata.standard.join("、\n");
+      let ids = ["standard", "manufacturer", "manufacturerAddr"];
+      ids.forEach((id) => {
+        data[id] = data[id].filter(Boolean); //去掉空的[""]
+      });
+    },
+    sortStandard(data) {
+      let standard = data.standard;
+      let base = data.basedata.standard.split("、");
+      let res = [];
+      let standardRes = [];
+      for (let one of standard) {
+        let index = base.indexOf(one);
+        if (index !== -1) {
+          res.push(one);
+          standardRes.push(base[index]);
+        }
+      }
+      res = [...new Set([...res, ...standard])];
+      standardRes = [...new Set([...standardRes, ...base])];
+      data.standard = res;
+      data.basedata.standard = standardRes;
+    },
     async getDetail() {
       let openId = uni.getStorageSync("openId");
       if (!openId) return;
@@ -282,11 +306,7 @@ export default {
         }, 3000);
         return;
       }
-      data.basedata.standard = data.basedata.standard.split("、").join("、\n");
-      let ids = ["standard", "manufacturer", "manufacturerAddr"];
-      ids.forEach((id) => {
-        data[id] = data[id].filter(Boolean); //去掉空的[""]
-      });
+      this.handleData(data);
 
       this.data = data;
       this.isCollected = this.data.isCollection;
