@@ -19,7 +19,7 @@
         </thead>
         <tr class="tr" v-for="(item, index) in config" :key="index">
           <td class="td0">{{ item.name }}</td>
-          <td class="td">{{ basedata[item.id] }}</td>
+          <td class="td">{{ basedata[item.id]||'-' }}</td>
           <td
             class="td"
             :class="{ center: checkIsCenter(item.id, data[item.id]) }"
@@ -179,15 +179,18 @@ export default {
   methods: {
     checkIsCenter(id, val) {
       if (this.loading) return false;
-      return id === "standard" && val.length === 0;
+      return  val.length === 0;
     },
-    getStandardHtml(val) {
+    checkIsLose(id,val){
       if (val.length === 0) {
-        if (this.data.basedata.standard.length) {
+        if (this.data.basedata[id].length) {
           this.isOk = false;
         }
-        return `<div class="red">缺失</div>`;
+        return true
       }
+      return false
+    },
+    getStandardHtml(val) {
       let baseStandardArr = this.data.basedata.standard.split("、\n");
       let isOnlyOne = val.length === 1;
       let arr = val
@@ -201,6 +204,9 @@ export default {
     },
     getShowHtml(val, base, isMultiple, id) {
       if (this.loading) return "";
+      if (this.checkIsLose(id,val)) {
+        return `<div class="red">缺失</div>`;
+      }
       let isStandard = id === "standard";
       if (isStandard) {
         return this.getStandardHtml(val);
@@ -258,7 +264,10 @@ export default {
         return;
       }
       data.basedata.standard = data.basedata.standard.split("、").join("、\n");
-      data.standard = data.standard.filter(Boolean); //去掉空的[""]
+      let ids=['standard','manufacturer','manufacturerAddr']
+      ids.forEach(id=>{
+        data[id] = data[id].filter(Boolean); //去掉空的[""]
+      })
 
       this.data = data;
       this.isCollected = this.data.isCollection;

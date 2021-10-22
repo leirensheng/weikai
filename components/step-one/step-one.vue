@@ -147,7 +147,7 @@ export default {
     }
   }
   .dialog-content {
-    max-height: 50vh;
+    max-height: 60vh;
     overflow: auto;
     background: white;
     .item {

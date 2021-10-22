@@ -127,7 +127,7 @@ export default {
     }
   }
   .content {
-    max-height: 40vh;
+    max-height: 50vh;
     overflow: auto;
     padding: 50rpx 0;
     width: 100%;
