@@ -82,14 +82,10 @@ export default {
       handler(val) {
         this.$nextTick(() => {
           this.config.forEach((one) => {
-            let reg = /(manufacturers|manufacturerAddrs)(\d)/;
-            let res = one.id.match(reg);
-            let key = one.id;
-            let index = 0;
             let value = val[one.id];
-            if (res) {
-              key = res[1];
-              index = res[2] - 1;
+            let reg = /(manufacturers|manufacturerAddrs)(\d)/;
+            let [_, key, index] = one.id.match(reg) || [];
+            if (_) {
               value = val[key][index];
             } else if (one.id === "standard") {
               value = val.standards.join("、\n");
@@ -122,7 +118,7 @@ export default {
       let onlyOne = length === 1;
       return Array.from({ length }, (one, index) => ({
         name: onlyOne ? name : `${name + (index + 1)}`,
-        id: `${key + (index + 1)}`,
+        id: `${key + index}`,
       }));
     },
     setValue(val, arr) {

@@ -114,11 +114,9 @@ export default {
       delete val.standard;
       Object.keys(val).forEach((key) => {
         let reg = /(manufacturers|manufacturerAddrs)(\d)/;
-        let res = key.match(reg);
+        let [_, realKey, index] = key.match(reg) || [];
 
-        if (res) {
-          let realKey = res[1];
-          let index = res[2] - 1;
+        if (_) {
           if (!val[realKey]) val[realKey] = [];
           val[realKey][index] = val[key];
           delete val[key];
