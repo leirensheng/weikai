@@ -15,6 +15,7 @@
           v-if="isReady"
           :maxlength="-1"
           auto-height
+          :cursor-spacing="35"
           class="textarea"
           v-model="form[item.id]"
           :name="item.id"
