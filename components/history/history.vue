@@ -197,13 +197,9 @@ export default {
           setTimeout(resolve, time);
         });
       return async (...args) => {
-        let start = Date.now();
-        let res = await fn.call(this, ...args);
-        let useTime = Date.now() - start;
-        if (useTime < minTime) {
-          await sleep(minTime - useTime);
-          return res;
-        }
+        let mainPromise = fn.apply(this, args)
+        let timePromise  = sleep(minTime)
+        let [res] = await Promise.all([mainPromise,timePromise])
         return res;
       };
     },
