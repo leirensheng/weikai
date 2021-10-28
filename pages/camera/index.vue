@@ -95,11 +95,13 @@ export default {
       this.curPreview = url;
 
       setTimeout(() => {
-        this.curPreview = "";
         this.isShowPreview = false;
-        this.hasDoneArr.push(url);
-        this.isDisabled = false;
-      }, 500);
+        setTimeout(() => {
+          this.curPreview = "";
+          this.hasDoneArr.push(url);
+          this.isDisabled = false;
+        }, 500);
+      }, 0);
     },
     async chooseOne() {
       if (this.isDisabled) {
@@ -107,7 +109,7 @@ export default {
       }
       let urlArr = await this.chooseImage();
       this.hasDoneArr.push(...urlArr);
-      this.back()
+      this.back();
     },
 
     takePhoto() {
@@ -190,16 +192,14 @@ export default {
       position: fixed;
       top: 0;
       left: 0;
-      opacity: 1;
+      opacity: 0;
+      transition: all 0.5s ease-in-out;
+      transform: scale(0);
       &.show {
         visibility: visible;
-        animation: smaller 0.5s ease-in-out;
-        @keyframes smaller {
-          to {
-            transform: scale(0);
-            opacity: 0;
-          }
-        }
+        transform: scale(1);
+        opacity: 1;
+        transition: 0s;
       }
     }
     .bottom {

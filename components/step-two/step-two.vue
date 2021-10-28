@@ -9,21 +9,21 @@
       <div class="has-content" v-else>
         <div
           class="item"
-          :class="{ preview:previewIndex===index }"
+          :class="{ preview: previewIndex === index }"
           v-for="(item, index) in hasDoneArr"
           :key="index"
           @click="preview(index)"
         >
           <image mode="aspectFit" class="pic" :src="item"></image>
           <div
-            v-if="previewIndex!==index"
+            v-if="previewIndex !== index"
             class="close-icon-wrap"
             @click.stop="removeOne(index)"
           >
             <div class="close-icon"></div>
           </div>
         </div>
-        <div class="add" v-if="hasDoneArr.length<6" @click="toCamera">
+        <div class="add" v-if="hasDoneArr.length < 6" @click="toCamera">
           <div class="close-icon"></div>
         </div>
       </div>
@@ -53,10 +53,10 @@ export default {
   mounted() {},
   methods: {
     preview(i) {
-      if(this.previewIndex===-1){
-        this.previewIndex = i
-      }else{
-        this.previewIndex=-1
+      if (this.previewIndex === -1) {
+        this.previewIndex = i;
+      } else {
+        this.previewIndex = -1;
       }
     },
     toCamera() {
@@ -135,6 +135,8 @@ export default {
           width: 100vw;
           height: 100vh;
           position: fixed;
+          z-index: 101;
+          margin-top: 0;
           top: 0;
           left: 0;
           background: rgb(0, 0, 0);
