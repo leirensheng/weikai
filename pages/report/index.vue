@@ -429,6 +429,7 @@ export default {
       width: $width;
     }
     .td {
+      word-break: break-all;
       width: calc((100% - #{$width}) * 0.5);
       padding: 0 10rpx;
       font-size: 24rpx;
