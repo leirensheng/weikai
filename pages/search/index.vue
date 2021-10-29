@@ -111,7 +111,7 @@ export default {
     },
     getForm() {
       let val = JSON.parse(JSON.stringify(this.form));
-      val.standards = val.standard.split(/、\n|、/);
+      val.standards = val.standard.split(/、\n|、/).map(one=> one.trim());
       delete val.standard;
       Object.keys(val).forEach((key) => {
         let reg = /(manufacturers|manufacturerAddrs)(\d)/;
