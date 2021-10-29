@@ -160,8 +160,10 @@ export default {
         let newVal = data[index].reportStatus;
         let isChange = one.reportStatus !== newVal;
         if (isChange) {
-          this.$set(this.firstPageData, index, data[index]);
-          //  this.firstPageData[index] = data[index];
+          let {createTime,reportStatus,reportTitle}= data[index]
+          one.reportStatus = reportStatus
+          one.createTime = createTime
+          one.reportTitle=reportTitle
         }
         total += newVal;
       });
