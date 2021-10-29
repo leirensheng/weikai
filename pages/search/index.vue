@@ -2,7 +2,6 @@
   <div class="search">
     <cur-step v-model="curStep"></cur-step>
     <step-one
-      :basedataId.sync="basedataId"
       v-model="url"
       v-show="curStep === 0"
     ></step-one>
@@ -61,7 +60,10 @@ export default {
     this.isLogin = await this.$checkLogin();
 
     if (this.curStep === 0) {
-      await this.$getClip();
+      let clipData= await this.$getClip();
+      if(this.$isUrl(clipData)){
+        this.url = clipData
+      }
     }
   },
   watch: {
@@ -77,7 +79,6 @@ export default {
       isError: false,
       url: "",
       oldUrl: "",
-      basedataId: "",
       batchId: "",
       loading: false,
       curStep: 0,
@@ -144,9 +145,9 @@ export default {
       let val = this.getForm();
       await generate({
         ...val,
-        basedataId: this.basedataId,
         isSub: weChatNotify,
         imageBatchId: this.batchId,
+        productUrl: this.url
       });
       this.setNeedRefreshLeft(true);
       uni.hideLoading();
@@ -158,7 +159,6 @@ export default {
       this.setHasDoneArr([]);
       this.setCompareArr([]);
       this.url = "";
-      this.basedataId = "";
       this.batchId = "";
       this.loading = false;
       this.curStep = "";
