@@ -238,6 +238,21 @@ export default {
       let arr = String(val).split("");
       let res = arr.map((one, index) => {
         let letterDiff = !base || base[index] !== one;
+
+        let lookAsSame = {
+          "(": "（",
+          ")": "）",
+          "（": "(",
+          "）": ")",
+        };
+        if (letterDiff && base) {
+          Object.entries(lookAsSame).forEach((oldVal, newVal) => {
+            if (base === oldVal && one === newVal) {
+              letterDiff = false;
+            }
+          });
+        }
+
         if (letterDiff) {
           isDifferent = true;
         }
