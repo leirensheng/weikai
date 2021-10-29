@@ -73,7 +73,7 @@ export default {
 <style scoped lang="scss">
 .history-item {
   box-shadow: 0px 0px 12rpx 0px rgba(0, 0, 0, 0.15);
-  padding: 80rpx 24rpx 37rpx 32rpx;
+  padding: 74rpx 24rpx 37rpx 32rpx;
   border-radius: 16rpx;
   position: relative;
   .status-pic {
@@ -101,7 +101,7 @@ export default {
   .wrap {
     .title {
       font-size: 28rpx;
-      line-height: 1;
+      line-height: 40rpx;
       display: -webkit-box;
       word-break: break-all;
       overflow: hidden;
@@ -110,7 +110,7 @@ export default {
       -webkit-line-clamp: 2;
     }
     .bottom {
-      margin-top: 27rpx;
+      margin-top: 21rpx;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -143,10 +143,12 @@ export default {
     position: relative;
     .title {
         height: 28rpx;
+        margin-top: 6rpx;
         background: $grey;
     }
     .bottom {
       .date {
+        margin-top: 5rpx;
         background: $grey;
         color: $grey;
       }

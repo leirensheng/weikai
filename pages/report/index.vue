@@ -247,7 +247,7 @@ export default {
         };
         if (letterDiff && base) {
           Object.entries(lookAsSame).forEach((oldVal, newVal) => {
-            if (base === oldVal && one === newVal) {
+            if (base[index] === oldVal && one === newVal) {
               letterDiff = false;
             }
           });
