@@ -24,7 +24,6 @@
         ></history-search>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -42,7 +41,7 @@ export default {
       collected: 0,
       isShowFrame: false,
       noMore: false,
-      page: 1
+      page: 1,
     };
   },
   props: {
@@ -72,7 +71,8 @@ export default {
 
     needWaitAndRefresh() {
       return (
-        !this.collected && this.firstPageData.some((one) => one.reportStatus === 0)
+        !this.collected &&
+        this.firstPageData.some((one) => one.reportStatus === 0)
       );
     },
     firstPageData() {
@@ -81,7 +81,7 @@ export default {
     params() {
       return {
         collected: this.collected,
-        page: this.page
+        page: this.page,
       };
     },
   },
@@ -135,7 +135,7 @@ export default {
       "setNeedRefreshLeft",
     ]),
     startWait() {
-      let waitTime = 5 * 60 * 1000
+      let waitTime = 5 * 60 * 1000;
       if (!startWaitTime) {
         startWaitTime = Date.now();
       }
@@ -149,7 +149,7 @@ export default {
           if (isWaitContinue && isTimeOk) {
             this.startWait();
           } else {
-            this.stopWait()
+            this.stopWait();
           }
         }
       }, 3000);
@@ -160,7 +160,8 @@ export default {
         let newVal = data[index].reportStatus;
         let isChange = one.reportStatus !== newVal;
         if (isChange) {
-          one.reportStatus = newVal;
+          this.$set(this.firstPageData, index, data[index]);
+          //  this.firstPageData[index] = data[index];
         }
         total += newVal;
       });
@@ -197,9 +198,9 @@ export default {
           setTimeout(resolve, time);
         });
       return async (...args) => {
-        let mainPromise = fn.apply(this, args)
-        let timePromise  = sleep(minTime)
-        let [res] = await Promise.all([mainPromise,timePromise])
+        let mainPromise = fn.apply(this, args);
+        let timePromise = sleep(minTime);
+        let [res] = await Promise.all([mainPromise, timePromise]);
         return res;
       };
     },
@@ -229,8 +230,8 @@ export default {
       this.loading = true;
       try {
         let data = await getHistory(this.params);
-        if (data.length===10) {
-          this.page++
+        if (data.length === 10) {
+          this.page++;
         }
         this.checkIsNoMore(data);
         this.history.push(...data);
