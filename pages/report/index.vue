@@ -1,7 +1,7 @@
 <template>
   <div class="report" :class="isOwner ? 'has-fixed' : 'no-fixed'">
     <div class="content">
-      <div class="title">{{ data.reportTitle || data.productName }}</div>
+      <div class="title">{{ data.reportTitle }}</div>
       <div class="date">{{ showDate }}</div>
       <div class="isConsistent" :style="{ borderColor, background }">
         <image mode="widthFix" class="icon" :src="src"></image>

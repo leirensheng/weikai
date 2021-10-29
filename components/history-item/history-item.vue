@@ -6,7 +6,7 @@
     </div>
 
     <div class="wrap"  :class="isShowFrame && 'hidden'">
-      <div class="title">{{ item.productName }}</div>
+      <div class="title">{{ item.reportTitle }}</div>
 
       <div class="bottom">
         <div class="date">{{ $formatTime(item.createTime, true) }}</div>
