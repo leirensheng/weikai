@@ -19,7 +19,7 @@
         </thead>
         <tr class="tr" v-for="(item, index) in config" :key="index">
           <td class="td0">{{ item.name }}</td>
-          <td class="td">{{ basedata[item.id] || "-" }}</td>
+          <td class="td">{{ basedata[item.id] || "缺失" }}</td>
           <td
             class="td"
             :class="{ center: checkIsCenter(data[item.id]) }"
