@@ -19,7 +19,11 @@
         </thead>
         <tr class="tr" v-for="(item, index) in config" :key="index">
           <td class="td0">{{ item.name }}</td>
-          <td class="td">{{ basedata[item.id] || "缺失" }}</td>
+          <td class="td">
+            <span v-if="loading"></span>
+            <span v-else-if="basedata[item.id]">{{ basedata[item.id] }}</span>
+            <span v-else class="red">缺失</span>
+          </td>
           <td
             class="td"
             :class="{ center: checkIsCenter(data[item.id]) }"
@@ -195,7 +199,7 @@ export default {
       let isOnlyOne = val.length === 1;
 
       if (baseStandardArr.length !== val.length) {
-        console.log('长度不一')
+        console.log("长度不一");
         this.isOk = false;
       }
 
@@ -261,7 +265,7 @@ export default {
       });
       if (isDifferent) {
         this.isOk = false;
-        console.log('不同',val,base)
+        console.log("不同", val, base);
       }
       return {
         str: res.join(""),
