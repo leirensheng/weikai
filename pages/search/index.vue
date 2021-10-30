@@ -118,7 +118,7 @@ export default {
           if (!val[realKey]) val[realKey] = [];
           val[realKey][index] = String(val[key]).trim();
           delete val[key];
-        } else {
+        } else if (!Array.isArray(val[key])) {
           val[key] = String(val[key]).trim();
         }
       });
