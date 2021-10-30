@@ -1,10 +1,7 @@
 <template>
   <div class="search">
     <cur-step v-model="curStep"></cur-step>
-    <step-one
-      v-model="url"
-      v-show="curStep === 0"
-    ></step-one>
+    <step-one v-model="url" v-show="curStep === 0"></step-one>
     <step-two v-model="hasDoneArr" v-show="curStep === 1"></step-two>
     <step-three :result="result" v-show="curStep === 2"></step-three>
 
@@ -60,9 +57,9 @@ export default {
     this.isLogin = await this.$checkLogin();
 
     if (this.curStep === 0) {
-      let clipData= await this.$getClip();
-      if(this.$isUrl(clipData)){
-        this.url = clipData
+      let clipData = await this.$getClip();
+      if (this.$isUrl(clipData)) {
+        this.url = clipData;
       }
     }
   },
@@ -111,7 +108,7 @@ export default {
     },
     getForm() {
       let val = JSON.parse(JSON.stringify(this.form));
-      val.standards = val.standard.split(/、\n|、/).map(one=> one.trim());
+      val.standards = val.standard.split(/、\n|、/).map((one) => one.trim());
       delete val.standard;
       Object.keys(val).forEach((key) => {
         let reg = /(manufacturers|manufacturerAddrs)(\d)/;
@@ -119,8 +116,10 @@ export default {
 
         if (_) {
           if (!val[realKey]) val[realKey] = [];
-          val[realKey][index] = val[key];
+          val[realKey][index] = String(val[key]).trim();
           delete val[key];
+        } else {
+          val[key] = String(val[key]).trim();
         }
       });
       console.log(val);
@@ -147,7 +146,7 @@ export default {
         ...val,
         isSub: weChatNotify,
         imageBatchId: this.batchId,
-        productUrl: this.url
+        productUrl: this.url,
       });
       this.setNeedRefreshLeft(true);
       uni.hideLoading();

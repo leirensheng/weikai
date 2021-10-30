@@ -195,6 +195,7 @@ export default {
       let isOnlyOne = val.length === 1;
 
       if (baseStandardArr.length !== val.length) {
+        console.log('长度不一')
         this.isOk = false;
       }
 
@@ -260,6 +261,7 @@ export default {
       });
       if (isDifferent) {
         this.isOk = false;
+        console.log('不同',val,base)
       }
       return {
         str: res.join(""),
