@@ -64,6 +64,12 @@ export function analyse(imageBatchId) {
     url: `/ocr/getImageText/${imageBatchId}`,
   });
 }
+export function getImageList(imageBatchId) {
+  return request({
+    url: `/ocr/getImageList/${imageBatchId}`,
+  });
+}
+
 
 export function uploadPic(src, imageBatchId) {
   return new Promise((resolve, reject) => {

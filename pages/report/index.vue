@@ -11,7 +11,7 @@
       <table>
         <thead class="thead">
           <th class="th">
-            <div class="title-bg">网页展示信息</div>
+            <div class="title-bg">产品网页展示信息</div>
           </th>
           <th class="th">
             <div class="title-bg">实物铭牌信息</div>
@@ -38,6 +38,26 @@
           ></td>
         </tr>
       </table>
+
+      <div class="link-info">
+        <div class="title-bg">商品链接</div>
+        <div class="link" @click="copy">{{ basedata.productLink }}</div>
+        <div @click="copy" class="copy">复制链接</div>
+      </div>
+      <div class="pic-info" v-if="imageList.length">
+        <div class="title-bg">产品实物照片</div>
+
+        <div class="pics">
+          <div
+            class="item"
+            v-for="(item, index) in imageList"
+            :key="index"
+            @click="preview(index)"
+          >
+            <image mode="aspectFit" class="pic" :src="item"></image>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="bottom" v-if="isOwner">
       <div class="left" @click="remove">
@@ -57,9 +77,15 @@
 </template>
 
 <script>
-import { deleteReport, collect, noCollect, getDetail } from "@/api/eye.js";
+import {
+  deleteReport,
+  collect,
+  noCollect,
+  getDetail,
+  getImageList,
+} from "@/api/eye.js";
 import { mapMutations } from "vuex";
-
+import { baseUrl } from "@/api/httpRequest.js";
 let isFromUser = true;
 
 export default {
@@ -68,6 +94,8 @@ export default {
   data() {
     return {
       isOk: true,
+      imageBatchId: "",
+      imageList: [],
       config: [
         {
           name: "产品名称",
@@ -162,11 +190,7 @@ export default {
       this.setNeedRefreshCollect(true);
     }
   },
-  // onShow() {
-  //   setTimeout(() => {
-  //     this.setAppShowRead(true);
-  //   }, 1000);
-  // },
+
   async onLoad({ id }) {
     isFromUser = this.$getPrePath() === "pages/user/index";
     // this.setAppShowRead(false);
@@ -265,12 +289,28 @@ export default {
       });
       if (isDifferent) {
         this.isOk = false;
-        console.log("不同", val, base);
+        // console.log("不同", val, base);
       }
       return {
         str: res.join(""),
         isDifferent,
       };
+    },
+    copy() {
+      uni.setClipboardData({
+        showToast: true,
+        data: this.basedata.productLink,
+        success: function () {
+          console.log("success");
+        },
+      });
+    },
+    preview(current) {
+      uni.previewImage({
+        current,
+        loop: true,
+        urls: this.imageList,
+      });
     },
     backFromLogin(val) {
       if (val) {
@@ -330,11 +370,20 @@ export default {
       this.handleData(data);
 
       this.data = data;
+      this.imageBatchId = data.imageBatchId;
+      if (data.imageBatchId) {
+        this.getImages();
+      }
       this.isCollected = this.data.isCollection;
       this.isOwner = this.data.openId === openId;
       this.loading = false;
     },
-
+    async getImages() {
+      let arr = await getImageList(this.imageBatchId);
+      this.imageList = arr.map(
+        (one) => `${baseUrl}/ocr/getImage?filePath=${one}`
+      );
+    },
     remove() {
       uni.showModal({
         title: "确定要删除此报告吗?",
@@ -460,6 +509,51 @@ export default {
       &.center {
         display: flex;
         align-items: center;
+      }
+    }
+  }
+  .link-info {
+    margin-top: 48rpx;
+    .link {
+      color: #ff782e;
+      text-decoration: underline;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 48rpx;
+      line-height: 40rpx;
+      font-size: 28rpx;
+    }
+    .copy {
+      text-align: center;
+      margin-top: 42rpx;
+      font-size: 24rpx;
+      color: #ff782e;
+      font-weight: 500;
+    }
+  }
+  .pic-info {
+    margin-top: 96rpx;
+    .pics {
+      display: flex;
+      flex-wrap: wrap;
+      .item {
+        margin-top: 48rpx;
+        width: 29%;
+        height: 240rpx;
+        position: relative;
+        margin-right: 44rpx;
+        border-radius: 4rpx;
+        background: #635c5c;
+
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+
+        .pic {
+          width: 100%;
+          height: 240rpx;
+        }
       }
     }
   }

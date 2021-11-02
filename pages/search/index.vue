@@ -167,8 +167,8 @@ export default {
     setTitle() {
       let map = {
         0: "复制商品链接",
-        1: "产品铭牌拍照",
-        2: "铭牌信息确认",
+        1: "产品实物拍照",
+        2: "产品信息确认",
       };
       uni.setNavigationBarTitle({
         title: map[this.curStep],

@@ -19,7 +19,7 @@
 export default {
   data() {
     return {
-      steps: ["复制商品链接", "产品铭牌拍照", "铭牌信息确认"],
+      steps: ["复制商品链接", "产品实物拍照", "产品信息确认"],
     };
   },
   props: {
