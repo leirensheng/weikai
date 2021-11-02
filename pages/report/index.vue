@@ -14,7 +14,7 @@
             <div class="title-bg">产品网页展示信息</div>
           </th>
           <th class="th">
-            <div class="title-bg">实物铭牌信息</div>
+            <div class="title-bg">产品实物信息</div>
           </th>
         </thead>
         <tr class="tr" v-for="(item, index) in config" :key="index">
@@ -138,8 +138,8 @@ export default {
     },
     isConsistentName() {
       return this.isOk
-        ? "该产品网页展示信息与实物铭牌展示信息一致"
-        : "该产品网页展示信息与实物铭牌展示信息存在差异";
+        ? "该产品网页展示信息与产品实物信息一致"
+        : "该产品网页展示信息与产品实物信息存在差异";
     },
     showDate() {
       return this.$formatTime(this.data.createTime, true);
