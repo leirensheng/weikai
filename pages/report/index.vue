@@ -516,7 +516,6 @@ export default {
     margin-top: 48rpx;
     .link {
       color: #ff782e;
-      text-decoration: underline;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
