@@ -47,7 +47,7 @@ export default {
         },
         {
           pic: "/static/index2.svg",
-          desc: '<div class="pic-desc">拍摄<span class="hightlight">实物产品铭牌</span>信息</div>',
+          desc: '<div class="pic-desc">拍摄<span class="hightlight">产品实物</span>信息</div>',
         },
       ],
     };
